@@ -20,6 +20,22 @@ export async function ListEmployees() {
     })
     return res
 }
+export async function GetSearchEmployee(searchValue: string | undefined) {
+    const reqOpt = {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("at")}`,
+            "Content-Type": "application/json",
+        }
+    };
+
+    let res = await axios.get(`/api/employee/search/${searchValue}`, reqOpt)
+    if (res.data) {
+        return res.data.Data
+    } else {
+        return false
+    }
+
+}
 
 export async function DeleteEmployeeById(id: string) {
     const reqOpt = {

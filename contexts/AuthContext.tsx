@@ -1,15 +1,17 @@
 "use client"
-import axios from 'axios'
-import jwt_decode, { jwtDecode } from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import { useRouter } from 'next/navigation'
-import { ReactNode, createContext, useEffect, useState } from 'react'
-
-import { UserInfoSession } from './auth'
+import { ReactNode, createContext, useState } from 'react'
 import { AuthValuesType, UserDataType } from './types'
 import { apiUserLogin } from '@/services/Employee/LoginApi'
 import { useCookies } from 'next-client-cookies';
-// import Cookies from "js-cookie";
 
+import {
+	Auth,
+	OAuthProvider,
+	signInWithPopup,
+} from "firebase/auth";
+import { authFirebase } from './AuthFirebase'
 
 const defaultProvider: AuthValuesType = {
 	user: {
@@ -18,12 +20,13 @@ const defaultProvider: AuthValuesType = {
 		exp: 0,
 		name: "",
 		roleName: "",
-	  },
+	},
 	loading: true,
 	setUser: () => null,
 	setLoading: () => Boolean,
-	login: (email: string, password: string) => Promise.resolve(),
+	// login: (email: string, password: string) => Promise.resolve(),
 	logout: () => Promise.resolve(),
+	doSignInWithMicrosoft: () => Promise.resolve(),
 }
 
 const AuthContext = createContext(defaultProvider)
@@ -37,31 +40,44 @@ const AuthProvider = ({ children }: Props) => {
 
 	const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
 	const [loading, setLoading] = useState<boolean>(defaultProvider.loading)
-	const cookies= useCookies()
+	const cookies = useCookies()
 
 	const router = useRouter()
 
+	const doSignInWithMicrosoft = async () => {
+		const provider = new OAuthProvider('microsoft.com');
 
-	const handleLogin = async (email: string, password: string) => {
+		// Set all custom parameters in one go
+		provider.setCustomParameters({
+			prompt: 'consent', // Force re-consent
+			login_hint: 'user@catconsulting.co', // Pre-fill email for the login
+			tenant: process.env.NEXT_PUBLIC_TENANT_ID!
+		});
+
+		const auth: Auth = authFirebase;
+
 		try {
-			window.localStorage.clear();
-		
-			let res = await apiUserLogin(email, password);
-			if (res) {
-				window.localStorage.setItem('at', JSON.stringify(res).slice(1, -1))
-				let userInfo = jwtDecode(String(res)) as UserDataType
-				window.localStorage.setItem('roleName', userInfo?.roleName!)
-				window.localStorage.setItem('exp', String(userInfo?.exp)!)
-				setUser(userInfo)
-				// storage.setExpire(String(userInfo?.exp)!)
-				cookies.set('token', JSON.stringify(res).slice(1, -1));
-				router.push("/employee")
-			}
+			const result = await signInWithPopup(auth, provider);
+			const idToken = await result.user.getIdToken()
 
-		} catch (err) {
-			console.log(err)
+			if (idToken) {
+				const res = await apiUserLogin(idToken);
+				if (res) {
+					window.localStorage.setItem('at', JSON.stringify(res).slice(1, -1));
+					const userInfo = jwtDecode(String(res)) as UserDataType;
+					window.localStorage.setItem('roleName', userInfo?.roleName!);
+					window.localStorage.setItem('exp', String(userInfo?.exp)!);
+					setUser(userInfo);
+					cookies.set('token', JSON.stringify(res).slice(1, -1));
+					router.push("/employee");
+				} else {
+					throw new Error('Login failed');
+				}
+			}
+		} catch (error) {
+			console.log(error);
 		}
-	}
+	};
 
 	const handleLogout = () => {
 		setUser(null)
@@ -76,8 +92,9 @@ const AuthProvider = ({ children }: Props) => {
 		loading,
 		setUser,
 		setLoading,
-		login: handleLogin,
+		// login: handleLogin,
 		logout: handleLogout,
+		doSignInWithMicrosoft
 	}
 
 	return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

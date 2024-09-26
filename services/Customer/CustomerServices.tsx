@@ -72,6 +72,22 @@ export async function GetSearchCustomer(searchValue: string | undefined) {
     }
 
 }
+export async function GetSearchCustomerContract(searchValue: string | undefined) {
+    const reqOpt = {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("at")}`,
+            "Content-Type": "application/json",
+        }
+    };
+
+    let res = await axios.get(`/api/customer/contract/search/${searchValue}`, reqOpt)
+    if (res.data) {
+        return res.data.Data
+    } else {
+        return false
+    }
+
+}
 
 
 export async function CreateCustomer(customer: Partial<CustomerCreateInterface>) {

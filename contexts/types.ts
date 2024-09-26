@@ -1,4 +1,4 @@
-import { UserRole } from "@/services/api"
+
 
 
 export type ErrCallbackType = (err: { [key: string]: string }) => void
@@ -27,5 +27,6 @@ export type AuthValuesType = {
 	user: UserDataType | null
 	setLoading: (value: boolean) => void
 	setUser: (value: UserDataType | null) => void
-	login: (email: string, password :string) =>  Promise<void>;
+	// login: (email: string, password :string) =>  Promise<void>;
+	doSignInWithMicrosoft: () => Promise<void>;
 }

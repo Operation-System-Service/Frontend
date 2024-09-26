@@ -1,13 +1,10 @@
 
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import { cookies } from "next/headers";
-export async function apiUserLogin(email: string, password: string): Promise<string | null> {
+export async function apiUserLogin(idToken: string): Promise<string | null> {
   try {
 
     const requestBody = {
-      email: email,
-      password: password,
+      token: idToken,
     }
 
     const response = await axios.post(`/api/login`, requestBody);

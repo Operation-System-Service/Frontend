@@ -20,6 +20,22 @@ export async function ListOperationTypes() {
         })
     return res
 }
+export async function GetSearchOperationService(searchValue: string | undefined) {
+    const reqOpt = {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("at")}`,
+            "Content-Type": "application/json",
+        }
+    };
+
+    let res = await axios.get(`/api/operation/search/${searchValue}`, reqOpt)
+    if (res.data) {
+        return res.data.Data
+    } else {
+        return false
+    }
+
+}
 
 export async function ListOperationServices() {
     const reqOpt = {
