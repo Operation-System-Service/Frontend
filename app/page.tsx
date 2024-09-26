@@ -4,36 +4,18 @@ import themeOptions from "@/@core/theme/themeOptions";
 
 import { Box, Typography, createTheme } from "@mui/material";
 import Paper from '@mui/material/Paper'
-import { Button, Checkbox, CssBaseline, FormControlLabel, Grid, TextField, ThemeProvider } from "@mui/material";
-import React, { useContext, useState } from "react";
+import { Button, CssBaseline, Grid } from "@mui/material";
+import React, { useState } from "react";
 import { useAuthens } from "@/contexts/useAuthen";
-// import { useCookies } from 'next-client-cookies';
-import { TfiMicrosoftAlt } from "react-icons/tfi";
+import MicrosoftIcon from '@mui/icons-material/Microsoft';
 
 
 
 const LoginPage = () => {
-  const {  doSignInWithMicrosoft } = useAuthens();
-  const { settings, saveSettings } = useSettings()
-  let darkTheme = createTheme(themeOptions(settings, "dark"))
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const { doSignInWithMicrosoft } = useAuthens();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  console.log()
-  const handleInputChangeEmail = (
-    event: React.ChangeEvent<{ id?: string; value: any }>
-  ) => {
-    const { value } = event.target;
-    setEmail(value);
-  };
 
-  const handleInputChangePassword = (
-    event: React.ChangeEvent<{ id?: string; value: any }>
-  ) => {
-    const { value } = event.target;
-    setPassword(value);
-  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -87,14 +69,9 @@ const LoginPage = () => {
               fullWidth
               variant="outlined"
               sx={{ mt: 3, mb: 2 }}
-              // onClick={submit}
-              // onClick={() => {
-              //   doSignInWithMicrosoft();
-              // }}
             >
-              <TfiMicrosoftAlt
+              <MicrosoftIcon
                 className="me-3"
-                fontSize={20}
                 style={{ color: '#F25022', margin: '0 8px' }} // Set your desired color and styles
               />
               Login With Microsoft
