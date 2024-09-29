@@ -1,6 +1,4 @@
 "use client"
-import { useSettings } from "@/@core/hooks/useSettings";
-import themeOptions from "@/@core/theme/themeOptions";
 
 import { Box, Typography, createTheme } from "@mui/material";
 import Paper from '@mui/material/Paper'
@@ -8,7 +6,7 @@ import { Button, CssBaseline, Grid } from "@mui/material";
 import React, { useState } from "react";
 import { useAuthens } from "@/contexts/useAuthen";
 import MicrosoftIcon from '@mui/icons-material/Microsoft';
-import aboutUs from "../public/images/aboutUs.jpg"
+
 
 
 
