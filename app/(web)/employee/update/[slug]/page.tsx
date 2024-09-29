@@ -1,13 +1,9 @@
 "use client"
-import { Alert, Button, FormControl, Snackbar, TextField, createTheme, OutlinedInput, ThemeProvider, CardHeader, SelectChangeEvent, Select } from '@mui/material'
+import { Alert, Button, FormControl, Snackbar, TextField, createTheme, ThemeProvider, CardHeader, SelectChangeEvent, Select, Box } from '@mui/material'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import React from 'react'
-
-
-import { UpdateCustomer } from '@/services/Customer/CustomerServices'
 import { useRouter } from 'next/navigation'
-import Layout from '@/app/(web)/layout'
 import { getEmployeeByEmail, ListEmployees, UpdateEmployee } from '@/services/Employee/EmployeeServices'
 import { EmployeeInterface, EmployeeUpdateInterface } from '@/interfaces/IEmployee'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -15,7 +11,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ListDevisions } from '@/services/Devision/DevisionService'
-import { ListRoles, ListRolesByDivisionId } from '@/services/Role/RoleServices'
+import { ListRolesByDivisionId } from '@/services/Role/RoleServices'
 import { RoleInterface } from '@/interfaces/IRole'
 import { DivisionInterface } from '@/interfaces/IDivision'
 
@@ -36,11 +32,7 @@ export default function EmployeeUpdate({ params: { slug } }: { params: { slug: s
     const getEmployee = async (email: string | undefined) => {
         let res = await getEmployeeByEmail(email)
         if (res && res.Status !== "error") {
-            console.log(res)
             setEmployee(res)
-            console.log("employee")
-            console.log(employee)
-            // getRoleByDivisionId(res.DivisionID)
         }
         if (res.ProbationDate && res.ProbationDate !== "") {
             setProbationDate(dayjs(res.ProbationDate.substring(0, 10)));
@@ -58,7 +50,6 @@ export default function EmployeeUpdate({ params: { slug } }: { params: { slug: s
     const getSupervisor = async () => {
 
         let res = await ListEmployees();
-        console.log(res);
         if (res) {
             setSupervisor(res);
         }
@@ -66,7 +57,6 @@ export default function EmployeeUpdate({ params: { slug } }: { params: { slug: s
     // // get Role
     const getRoleByDivisionId = async (id: number) => {
         let res = await ListRolesByDivisionId(id);
-        console.log(res);
         if (res) {
             setRole(res);
         }
@@ -75,21 +65,20 @@ export default function EmployeeUpdate({ params: { slug } }: { params: { slug: s
     const getDevision = async () => {
         //let id =0;
         let res = await ListDevisions();
-        console.log(res);
         if (res) {
             setDevision(res);
         }
     }
 
     React.useEffect(() => {
-        console.log("slug");
-        console.log(slug);
         getEmployee(slug);
         getSupervisor();
         getDevision();
     }, []);
     React.useEffect(() => {
-        getRoleByDivisionId(employee.DivisionID!);
+        if (employee.DivisionID !== 0 && employee.DivisionID != null && employee.DivisionID != undefined) {
+            getRoleByDivisionId(employee.DivisionID!);
+        }
     }, [employee.DivisionID]);
 
     const convertType = (data: string | number | undefined) => {
@@ -107,7 +96,6 @@ export default function EmployeeUpdate({ params: { slug } }: { params: { slug: s
         employee.TerminationDate = terminateDate.format("YYYY-MM-DD").toString()
         employee.DivisionID = convertType(employee.DivisionID)
         employee.RoleID = convertType(employee.RoleID)
-        console.log(employee)
         try {
             let res = await UpdateEmployee(employee)
             if (res && res.Status !== "error") {
@@ -124,7 +112,6 @@ export default function EmployeeUpdate({ params: { slug } }: { params: { slug: s
 
 
         } catch (error) {
-            console.error("Error submitting customer data:", error);
             setAlertMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
             setError(true);
         }
@@ -187,7 +174,8 @@ export default function EmployeeUpdate({ params: { slug } }: { params: { slug: s
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Layout>
+            <Box height="100vh">
+
                 <ThemeProvider theme={theme}>
 
                     <div
@@ -204,7 +192,7 @@ export default function EmployeeUpdate({ params: { slug } }: { params: { slug: s
                                 },
                             }}
                             className="font-bold"
-                            title="Create Employee Management"
+                            title="Update Employee Management"
                         ></CardHeader>
                     </div>
 
@@ -358,30 +346,6 @@ export default function EmployeeUpdate({ params: { slug } }: { params: { slug: s
 
                                 <Grid item xs={5}>
                                     <FormControl fullWidth variant="outlined">
-                                        <p style={{ color: "black" }}>Role</p>
-                                        <Select
-                                            native
-                                            value={employee.RoleID ?? 0}
-                                            onChange={handleChangeNumber}
-                                            inputProps={{
-                                                name: "RoleID",
-                                            }}
-                                        >
-                                            <option value={0} key={0}>
-                                                กรุณา เลือกชนิดของ role
-                                            </option>
-                                            {role.map((item: RoleInterface) => (
-                                                <option key={item.Id} value={item.Id}>{item.Name}</option>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-
-                            </Grid>
-
-                            <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
-                                <Grid item xs={5}>
-                                    <FormControl fullWidth variant="outlined">
                                         <p style={{ color: "black" }}>Division</p>
                                         <Select
                                             native
@@ -395,6 +359,30 @@ export default function EmployeeUpdate({ params: { slug } }: { params: { slug: s
                                                 กรุณา เลือกแผนก
                                             </option>
                                             {devision.map((item: DivisionInterface) => (
+                                                <option key={item.Id} value={item.Id}>{item.Name}</option>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+
+                            </Grid>
+
+                            <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
+                                <Grid item xs={5}>
+                                    <FormControl fullWidth variant="outlined">
+                                        <p style={{ color: "black" }}>Role</p>
+                                        <Select
+                                            native
+                                            value={employee.RoleID ?? 0}
+                                            onChange={handleChangeNumber}
+                                            inputProps={{
+                                                name: "RoleID",
+                                            }}
+                                        >
+                                            <option value={0} key={0}>
+                                                กรุณา เลือกชนิดของ role
+                                            </option>
+                                            {role.map((item: RoleInterface) => (
                                                 <option key={item.Id} value={item.Id}>{item.Name}</option>
                                             ))}
                                         </Select>
@@ -458,7 +446,7 @@ export default function EmployeeUpdate({ params: { slug } }: { params: { slug: s
                         </div>
                     </Container>
                 </ThemeProvider>
-            </Layout>
+            </Box>
         </LocalizationProvider>
     );
 }

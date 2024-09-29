@@ -2,18 +2,9 @@
 import { Button, CardHeader, Divider, Grid, TextField, CardContent, Container, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, ThemeProvider, createTheme, Typography, FormControl, Select, SelectChangeEvent, InputLabel, OutlinedInput } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import Layout from "@/app/(web)/layout";
-import { CustomerInterface } from "@/interfaces/ICustomer";
-
 import React from "react";
-
-import themeOptions from "@/@core/theme/themeOptions";
-import { useSettings } from "@/@core/hooks/useSettings";
 import { GetSearchCustomer } from "@/services/Customer/CustomerServices";
 import Link from "next/link";
-
-import { ContractInterface } from "@/interfaces/IContract";
-import { ListContracts } from "@/services/Contract/ContractServices";
 import { DeleteOperationServiceById, GetOperationServiceByStatusId, ListOperationServices } from "@/services/Operation/OperationServices";
 import { ListOperationServiceInterface } from "@/interfaces/IOperationService";
 import { StatusInterface } from "@/interfaces/IStatus";
@@ -26,15 +17,6 @@ const useStyles = makeStyles({
     },
     appBar: {
         zIndex: 1200,
-    },
-    drawer: {
-        width: 120,
-        flexShrink: 0,
-    },
-    drawerPaper: {
-        width: 240,
-        background:
-            "linear-gradient(0deg, rgba(3,8,20,1) 60%, rgba(8,18,50,255) 100%)",
     },
     toolbar: {
         minHeight: 64,
@@ -74,7 +56,7 @@ const Ticket = ({ children }: any) => {
             setOverAllOperation(res)
         }
     }
-    const getOperationByStatus = async (id : Number) => {
+    const getOperationByStatus = async (id: Number) => {
         let res = await GetOperationServiceByStatusId(id);
         if (res) {
             setOperation(res)
@@ -83,7 +65,6 @@ const Ticket = ({ children }: any) => {
     React.useEffect(() => {
         getOperation();
         getStatus();
-        // console.log(contract)
 
     }, [])
     //For Delete state 
@@ -94,11 +75,6 @@ const Ticket = ({ children }: any) => {
 
     const handleDelete = async () => { // when click submit
         let res = await DeleteOperationServiceById(deleteID)
-        if (res) {
-            console.log(res.data)
-        } else {
-            console.log(res.data)
-        }
         getOperation();
         setOpenDelete(false)
 
@@ -118,10 +94,10 @@ const Ticket = ({ children }: any) => {
         } else {
             let res = await GetSearchCustomer(searchValue)
             if (res) {
-                console.log(res)
+
                 setOperation(res);
             } else {
-                console.log(res)
+
             }
 
         }
@@ -129,7 +105,6 @@ const Ticket = ({ children }: any) => {
     }
     const getStatus = async () => {
         let res = await ListStatus();
-        console.log(res);
         if (res) {
             setStatus(res);
         }
@@ -152,7 +127,7 @@ const Ticket = ({ children }: any) => {
     const handleChangeStatus = (event: SelectChangeEvent<number>) => {
         const value = Number(event.target.value); // Convert the value to a number
         setSelectStatus(value);
-    
+
         if (value === 0) {
             getOperation();
         } else {
@@ -162,9 +137,7 @@ const Ticket = ({ children }: any) => {
 
 
     return (
-
-        <Layout>
-
+        <Box height="100vh">
             <div
                 className="flex flex-row justify-between w-full"
                 style={{ backgroundColor: "#f8f9fa" }}
@@ -229,7 +202,7 @@ const Ticket = ({ children }: any) => {
                             {/* Status Dropdown */}
                             <Grid item xs={4} sx={{ paddingLeft: "20px" }}>
                                 <FormControl fullWidth variant="outlined">
-                                <InputLabel id="demo-multiple-name-label">Status</InputLabel>
+                                    <InputLabel id="demo-multiple-name-label">Status</InputLabel>
                                     <Select
                                         labelId="demo-multiple-name-label"
                                         id="demo-multiple-name"
@@ -280,9 +253,11 @@ const Ticket = ({ children }: any) => {
                                     position: 'absolute',
                                     top: 8,
                                     left: 8,
+                                    color: "#000" // Changed to black
+
                                 }}
                             >
-                                New Case
+                                New Cases
                             </Typography>
 
                             {/* Large centered text */}
@@ -321,9 +296,10 @@ const Ticket = ({ children }: any) => {
                                     position: 'absolute',
                                     top: 8,
                                     left: 8,
+                                    color: "#000" // Changed to black
                                 }}
                             >
-                                Open Case
+                                Open Cases
                             </Typography>
 
                             {/* Large centered text */}
@@ -362,9 +338,10 @@ const Ticket = ({ children }: any) => {
                                     position: 'absolute',
                                     top: 8,
                                     left: 8,
+                                    color: "#000" // Changed to black
                                 }}
                             >
-                                Close Case
+                                Closed Cases
                             </Typography>
 
                             {/* Large centered text */}
@@ -385,107 +362,108 @@ const Ticket = ({ children }: any) => {
                         </Box>
                     </div>
                     <Divider sx={{ borderColor: "border-gray-600", padding: 2 }} />
-                    <div className="flex flex-col h-screen">
-                        <TableContainer style={{ maxHeight: `calc(100vh - 350px)` }} >
-                            <Table aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell align="center" width="20%"> Subject </TableCell>
-                                        <TableCell align="center" width="5%"> TicketNumber </TableCell>
-                                        <TableCell align="center" width="5%"> Status </TableCell>
-                                        <TableCell align="center" width="5%"> Priority </TableCell>
-                                        <TableCell align="center" width="10%"> ScopeOfWorkURL </TableCell>
-                                        <TableCell align="center" width="5%"> View </TableCell>
-                                        <TableCell align="center" width="5%"> Delete </TableCell>
+                    <div className="flex flex-col" style={{ background: "#f8f9fa", maxHeight: "59vh" }}>
+                    <div style={{ overflowX: 'auto' }}> {/* Add this div for horizontal scrolling */}
+                            <TableContainer >
+                                <Table aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell align="center" width="20%"> Subject </TableCell>
+                                            <TableCell align="center" width="5%"> TicketNumber </TableCell>
+                                            <TableCell align="center" width="5%"> Status </TableCell>
+                                            <TableCell align="center" width="5%"> Priority </TableCell>
+                                            <TableCell align="center" width="10%"> ScopeOfWorkURL </TableCell>
+                                            <TableCell align="center" width="5%"> View </TableCell>
+                                            <TableCell align="center" width="5%"> Delete </TableCell>
 
-                                    </TableRow>
-                                </TableHead>
+                                        </TableRow>
+                                    </TableHead>
 
-                                <TableBody>
-                                    {operation.map((item: ListOperationServiceInterface) => (
-                                        <TableRow
-                                            key={item.Id}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        >
-                                            <TableCell align="left">{item.OperationSubject || "-"}</TableCell>
-                                            <TableCell align="center">{item.OperationNumber || "-"}</TableCell>
-                                            <TableCell align="center">{item.Status?.Name || "-"}</TableCell>
-                                            <TableCell align="center">{item.Priority?.Name || "-"}</TableCell>
-                                            <TableCell align="left">{item.ScopeOfWorkURL || "-"}</TableCell>
-                                            <TableCell align="center">
-                                                {
-                                                    <Link href={"/customer/contract/ticket/update/" + item.Id}>
+                                    <TableBody>
+                                        {operation.map((item: ListOperationServiceInterface) => (
+                                            <TableRow
+                                                key={item.Id}
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                                <TableCell align="left">{item.OperationSubject || "-"}</TableCell>
+                                                <TableCell align="center">{item.OperationNumber || "-"}</TableCell>
+                                                <TableCell align="center">{item.Status?.Name || "-"}</TableCell>
+                                                <TableCell align="center">{item.Priority?.Name || "-"}</TableCell>
+                                                <TableCell align="left">{item.ScopeOfWorkURL || "-"}</TableCell>
+                                                <TableCell align="center">
+                                                    {
+                                                        <Link href={"/customer/contract/ticket/update/" + item.Id}>
+                                                            <Button
+                                                                variant='outlined'
+                                                                color='warning'
+                                                                sx={{
+                                                                    maxWidth: 75, // Set the maximum width of the button
+                                                                    maxHeight: 60, // Set the maximum height of the button
+                                                                }}
+                                                            >
+                                                                view
+                                                            </Button>
+                                                        </Link>
+
+                                                    }
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {
+
                                                         <Button
                                                             variant='outlined'
-                                                            color='warning'
+                                                            color='error'
+                                                            onClick={() => { handleDialogDeleteOpen(item.Id) }}
                                                             sx={{
                                                                 maxWidth: 75, // Set the maximum width of the button
                                                                 maxHeight: 60, // Set the maximum height of the button
                                                             }}
                                                         >
-                                                            view
+                                                            Delete
                                                         </Button>
-                                                    </Link>
+                                                    }
 
-                                                }
-                                            </TableCell>
-                                            <TableCell align="center">
-                                                {
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <Box>
+                            </Box>
+                            <Dialog
+                                open={openDelete}
+                                onClose={handleDialogDeleteclose}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                                PaperProps={{
+                                    style: {
+                                        backgroundColor: "#f8f9fa",
+                                    },
+                                }}
+                            >
+                                <DialogTitle id="alert-dialog-title">
+                                    {`คุณต้องการลบ operation ${operation.filter((emp) => (emp.Id === deleteID)).at(0)?.OperationSubject} จริงหรือไม่`}
+                                </DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                        หากคุณลบข้อมูลนี้แล้วนั้น คุณจะไม่สามารถกู้คืนได้อีก คุณต้องการลบข้อมูลนี้ใช่หรือไม่
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={handleDialogDeleteclose}>ยกเลิก</Button>
+                                    <Button onClick={handleDelete} className="bg-red" autoFocus>
+                                        ยืนยัน
+                                    </Button>
+                                </DialogActions>
 
-                                                    <Button
-                                                        variant='outlined'
-                                                        color='error'
-                                                        onClick={() => { handleDialogDeleteOpen(item.Id) }}
-                                                        sx={{
-                                                            maxWidth: 75, // Set the maximum width of the button
-                                                            maxHeight: 60, // Set the maximum height of the button
-                                                        }}
-                                                    >
-                                                        Delete
-                                                    </Button>
-                                                }
-
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <Box>
-                        </Box>
-                        <Dialog
-                            open={openDelete}
-                            onClose={handleDialogDeleteclose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                            PaperProps={{
-                                style: {
-                                    backgroundColor: "#f8f9fa",
-                                },
-                            }}
-                        >
-                            <DialogTitle id="alert-dialog-title">
-                                {`คุณต้องการลบ operation ${operation.filter((emp) => (emp.Id === deleteID)).at(0)?.OperationSubject} จริงหรือไม่`}
-                            </DialogTitle>
-                            <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                    หากคุณลบข้อมูลนี้แล้วนั้น คุณจะไม่สามารถกู้คืนได้อีก คุณต้องการลบข้อมูลนี้ใช่หรือไม่
-                                </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={handleDialogDeleteclose}>ยกเลิก</Button>
-                                <Button onClick={handleDelete} className="bg-red" autoFocus>
-                                    ยืนยัน
-                                </Button>
-                            </DialogActions>
-
-                        </Dialog>
+                            </Dialog>
+                        </div>
                     </div>
-
                 </div>
             </CardContent>
 
-        </Layout>
+        </Box>
     )
 
 }

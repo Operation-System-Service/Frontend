@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CookiesProvider } from 'next-client-cookies/server';
+import ClientLayout from "./clientLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,12 +19,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <CookiesProvider>
-
-        <AuthProvider>
-          <body className={inter.className}>{children}</body>
-        </AuthProvider>
-      </CookiesProvider>
+      <body className={inter.className}> {/* Make sure to include <body> */}
+        <CookiesProvider>
+          <AuthProvider>
+            <ClientLayout>{children}</ClientLayout>
+          </AuthProvider>
+        </CookiesProvider>
+      </body>
     </html>
   );
 }

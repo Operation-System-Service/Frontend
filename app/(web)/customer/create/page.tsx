@@ -16,7 +16,7 @@ import {
 import { CustomerAddressInterface, CustomerCreateInterface, CustomerGroupInterface } from "@/interfaces/ICustomer";
 import { CreateCustomer, CreateCustomerAddress, ListCustomerGroups } from "@/services/Customer/CustomerServices";
 import { useRouter } from "next/navigation";
-import Layout from "../../layout";
+
 function CustomerCreate() {
     const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
         props,
@@ -43,12 +43,10 @@ function CustomerCreate() {
             if (res && res.Status !== "error") {
                 setCustomerGroup(res)
             } else {
-                console.log(res)
                 setAlertMessage(res?.Message || "เกิดข้อผิดพลาดดึงข้อมูล Customer Group");
                 setError(true);
             }
         } catch (error) {
-            console.log(error)
             setAlertMessage("เกิดข้อผิดพลาดดึงข้อมูล Customer Group");
             setError(true);
         }
@@ -59,13 +57,9 @@ function CustomerCreate() {
     };
     //submit
     const submit = async () => {
-        console.log("submit 1")
         try {
             customer.CustomerGroupId = convertType(customer.CustomerGroupId)
-            console.log(customer);
-
             const res = await CreateCustomer(customer);
-            console.log(res);
 
 
             if (res && res.Status !== "error") {
@@ -85,7 +79,6 @@ function CustomerCreate() {
                 setError(true);
             }
         } catch (error) {
-            console.error("Error submitting customer data:", error);
             setAlertMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
             setError(true);
         }
@@ -148,7 +141,8 @@ function CustomerCreate() {
     });
 
     return (
-        <Layout>
+        <Box height="100vh">
+
             <ThemeProvider theme={theme}>
 
                 <div
@@ -249,150 +243,7 @@ function CustomerCreate() {
                                 </FormControl>
                             </Grid>
                         </Grid>
-                        <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
-                            <Grid item xs={5}>
-                                <FormControl fullWidth variant="outlined">
-                                    <p style={{ color: "black" }}>SiteName</p>
-
-                                    <TextField
-                                        id="SiteName"
-                                        variant="outlined"
-                                        type="string"
-                                        size="medium"
-                                        value={customerAddressCreate.SiteName || ""}
-                                        onChange={handleInputChangeAddress}
-                                        style={{ color: "black" }}
-
-                                    />
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={5}>
-                                <FormControl fullWidth variant="outlined">
-                                    <p style={{ color: "black" }}>GoogleMapURL</p>
-
-                                    <TextField
-                                        id="GoogleMapURL"
-                                        variant="outlined"
-                                        type="string"
-                                        size="medium"
-                                        value={customerAddressCreate.GoogleMapURL || ""}
-                                        onChange={handleInputChangeAddress}
-
-                                        style={{ color: "black" }}
-                                    />
-                                </FormControl>
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
-                            <Grid item xs={5}>
-                                <FormControl fullWidth variant="outlined">
-                                    <p style={{ color: "black" }}>Contact Person</p>
-                                    <TextField
-                                        id="ContactPerson"
-                                        variant="outlined"
-                                        type="string"
-                                        size="medium"
-                                        value={customerAddressCreate.ContactPerson || ""}
-                                        onChange={handleInputChangeAddress}
-                                        style={{ color: "black" }}
-                                    />
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={5}>
-                                <FormControl fullWidth variant="outlined">
-                                    <p style={{ color: "black" }}>LineID</p>
-
-                                    <TextField
-                                        id="ContactLineID"
-                                        variant="outlined"
-                                        type="string"
-                                        size="medium"
-                                        value={customerAddressCreate.ContactLineID || ""}
-                                        onChange={handleInputChangeAddress}
-                                        style={{ color: "black" }}
-                                    />
-                                </FormControl>
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
-                            <Grid item xs={5}>
-                                <FormControl fullWidth variant="outlined">
-                                    <p style={{ color: "black" }}>Phone</p>
-                                    <TextField
-                                        id="ContactNumber"
-                                        variant="outlined"
-                                        type="string"
-                                        size="medium"
-                                        value={customerAddressCreate.ContactNumber || ""}
-                                        onChange={handleInputChangeAddress}
-
-                                        style={{ color: "black" }}
-                                        inputProps={{ maxLength: 10 }}
-                                    />
-                                </FormControl>
-                            </Grid>
-
-                            <Grid item xs={5}>
-                                <FormControl fullWidth variant="outlined">
-                                    <p style={{ color: "black" }}>Email</p>
-                                    <TextField
-                                        id="ContactEmail"
-                                        variant="outlined"
-                                        type="string"
-                                        size="medium"
-                                        value={customerAddressCreate.ContactEmail || ""}
-                                        onChange={handleInputChangeAddress}
-                                        style={{ color: "black" }}
-                                    />
-                                </FormControl>
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
-                            <Grid item xs={5}>
-                                <FormControl fullWidth variant="outlined">
-                                    <p style={{ color: "black" }}>Contact Person</p>
-                                    <TextField
-                                        id="ContactPerson"
-                                        variant="outlined"
-                                        type="string"
-                                        size="medium"
-                                        value={customerAddressCreate.ContactPerson || ""}
-                                        onChange={handleInputChangeAddress}
-                                        style={{ color: "black" }}
-                                    />
-                                </FormControl>
-                            </Grid>
-
-                            <Grid item xs={5}>
-                                <FormControl fullWidth variant="outlined">
-                                    <p style={{ color: "black" }}>Address</p>
-                                    <TextField
-                                        id="Address"
-                                        variant="outlined"
-                                        type="string"
-                                        size="medium"
-                                        value={customerAddressCreate.Address || ""}
-                                        onChange={handleInputChangeAddress}
-                                        style={{ color: "black" }}
-                                    />
-                                </FormControl>
-                            </Grid>
-
-                            <Grid item xs={10}>
-                                <FormControl fullWidth variant="outlined">
-                                    <p style={{ color: "black" }}>Description</p>
-                                    <OutlinedInput
-                                        id="Description"
-                                        type="string"
-                                        size="medium"
-                                        value={customerAddressCreate.Description || ""}
-                                        onChange={handleInputChangeAddress}
-                                        style={{ color: "black" }}
-                                    />
-                                </FormControl>
-                            </Grid>
-
-                        </Grid>
+                        
                         <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
                             <Grid item xs={4}>
                                 <a href={"/customer"}>
@@ -427,7 +278,7 @@ function CustomerCreate() {
                     </div>
                 </Container>
             </ThemeProvider>
-        </Layout>
+        </Box>
 
     );
 }

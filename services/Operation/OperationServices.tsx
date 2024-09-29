@@ -73,7 +73,6 @@ export async function CreateOperationService(operation : Partial<CreateOperation
             return false;
         }
     } catch (error) {
-        console.error("Error creating contract:", error);
         return false;
     }
 }
@@ -95,7 +94,6 @@ export async function UpdateOperationService(contract: Partial<UpdateOperationSe
             return false;
         }
     } catch (error) {
-        console.error("Error creating contract:", error);
         return false;
     }
 

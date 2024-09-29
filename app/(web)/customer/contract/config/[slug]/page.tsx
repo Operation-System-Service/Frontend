@@ -1,10 +1,7 @@
 "use client";
 
-import Layout from "@/app/(web)/layout";
 import { DeviceConfigBackupInterface, ContractCreateInterface, CreateDeviceConfigBackupInterface, CreateDeviceInterface, CreateSoftwareInterface, DeviceInterface, SoftwareInterface, CreateSoftwareConfigBackupInterface, SoftwareConfigBackupInterface } from "@/interfaces/IContract";
-import { Alert, Box, Button, CardContent, CardHeader, createTheme, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, Select, SelectChangeEvent, Snackbar, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, ThemeProvider, Tooltip } from "@mui/material";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from "dayjs";
+import { Alert, Box, Button, CardContent, CardHeader, Container, createTheme, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, Select, SelectChangeEvent, Snackbar, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, ThemeProvider, Tooltip } from "@mui/material";
 import React from "react";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -91,7 +88,8 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
         if (url !== "-") {
             navigator.clipboard.writeText(url).then(
                 (err) => {
-                    console.error("Could not copy text: ", err);
+                    setAlertMessage(`Could not copy text: ${err}`);
+                    setSuccess(true);
                 }
             );
         }
@@ -100,14 +98,12 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
     const getConfigByContractId = async (id: string) => {
         let res = await ListDeviceConfigBackupByContractId(id);
         if (res && res.Status !== "error") {
-            console.log(res)
             setListConfigs(res)
         }
     }
     const getConfigSoftwareByContractId = async (id: string) => {
         let res = await ListSoftwareConfigBackupByContractId(id);
         if (res && res.Status !== "error") {
-            console.log(res)
             setListConfigsSoftware(res)
         }
     }
@@ -134,10 +130,7 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
     const getContract = async (id: string | undefined) => {
         let res = await getContractByID(id)
         if (res && res.Status !== "error") {
-            console.log(res)
             setContract(res)
-            console.log("contract")
-            console.log(contract)
         }
     }
     React.useEffect(() => {
@@ -158,7 +151,6 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
 
         // Find the selected site by name
         const selectedDevice = device.find((site) => site.Id === value);
-        console.log("selectedSite: ", selectedDevice)
         if (selectedDevice) {
             // Update the fields with the selected site's data
             setSelectDevice({
@@ -179,7 +171,6 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
 
         // Find the selected site by name
         const selectedSoftware = software.find((site) => site.Id === value);
-        console.log("selectedSite: ", selectedSoftware)
         if (selectedSoftware) {
             // Update the fields with the selected site's data
             setSelectSoftware({
@@ -200,7 +191,6 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
 
         // Find the selected site by name
         const selectedOperation = operationService.find((op) => op.Id === value);
-        console.log("selectedSite: ", selectedOperation)
         if (selectedOperation) {
             // Update the fields with the selected site's data
             setSelectOperationService({
@@ -219,7 +209,6 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
 
         // Find the selected site by name
         const selectedOperation = operationService.find((op) => op.Id === value);
-        console.log("selectedSite: ", selectedOperation)
         if (selectedOperation) {
             // Update the fields with the selected site's data
             setSelectOperationServiceSoftware({
@@ -292,7 +281,6 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
             getConfigByContractId(slug);
 
         } catch (error) {
-            console.error("Error submitting contract data:", error);
             setAlertMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
             setError(true);
         }
@@ -326,7 +314,6 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
             getConfigSoftwareByContractId(slug);
 
         } catch (error) {
-            console.error("Error submitting contract data:", error);
             setAlertMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
             setError(true);
         }
@@ -340,26 +327,16 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
 
     const handleDelete = async () => { // when click submit
         let res = await DeleteDeviceConfigBackupById(deleteID)
-        if (res) {
-            console.log(res.data)
-        } else {
-            console.log(res.data)
-        }
         getConfigByContractId(slug);
         setOpenDelete(false)
 
     }
     const handleDeleteSoftware = async () => { // when click submit
         let res = await DeleteSoftwareConfigBackupById(deleteID)
-        if (res) {
-            console.log(res.data)
-        } else {
-            console.log(res.data)
-        }
         getConfigSoftwareByContractId(slug);
         setOpenDelete(false)
     }
-    
+
     const handleDialogDeleteOpen = (ID: string) => {
         setDeleteID(ID)
         setOpenDelete(true)
@@ -378,7 +355,8 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
     };
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Layout>
+            <Box height="100vh">
+
                 <ThemeProvider theme={theme}>
                     <div
                         className="flex flex-row justify-between w-full"
@@ -420,698 +398,705 @@ export default function Config({ params: { slug } }: { params: { slug: string } 
                             {message}
                         </Alert>
                     </Snackbar>
-                    <TabContext value={String(tabValue)}>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <TabList onChange={handleChangeTab} aria-label="lab API tabs example">
-                                <Tab label="Device" value="1" />
-                                <Tab label="Software" value="2" />
-                            </TabList>
-                        </Box>
-                        <TabPanel value="1">
-                            <CardContent style={{ backgroundColor: "#f8f9fa" }} sx={{ p: 0, px: 2, flexGrow: 1 }}>
-                                <div>
-                                    <div style={{ marginTop: "10px" }}>
+                    <div className="flex flex-col" style={{ background: "#f8f9fa", maxHeight: "100vh" }}>
+                        <div style={{ overflowX: 'auto' }}> {/* Add this div for horizontal scrolling */}
+                            <TabContext value={String(tabValue)}>
+                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                    <TabList onChange={handleChangeTab} aria-label="lab API tabs example">
+                                        <Tab label="Device" value="1" />
+                                        <Tab label="Software" value="2" />
+                                    </TabList>
+                                </Box>
+                                <TabPanel value="1">
+                                    <CardContent style={{ backgroundColor: "#f8f9fa" }} sx={{ p: 0, px: 2, flexGrow: 1 }}>
+                                        <div>
+                                            <div style={{ marginTop: "10px" }}>
 
-                                        <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Note</p>
+                                                <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Note</p>
 
-                                                    <TextField
-                                                        id="Note"
+                                                            <TextField
+                                                                id="Note"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                value={createConfig.Note || ""}
+                                                                onChange={handleInputChange}
+                                                                style={{ color: "black" }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>FilePath</p>
+
+                                                            <TextField
+                                                                id="FilePath"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                value={createConfig.FilePath || ""}
+                                                                onChange={handleInputChange}
+                                                                style={{ color: "black" }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Device Serial Number</p>
+                                                            <Select
+                                                                native
+                                                                value={createConfig.DeviceID ?? ""}
+                                                                onChange={handleChangeDevice}
+                                                                inputProps={{
+                                                                    name: "DeviceID",
+                                                                }}
+                                                            >
+                                                                <option value={0} key={0}>
+                                                                    กรุณา เลือกอุปกรณ์
+                                                                </option>
+                                                                {device.map((item: DeviceInterface) => (
+                                                                    <option key={item.Id} value={item.Id}>{item.Serial}</option>
+                                                                ))}
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                </Grid>
+
+                                                <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
+
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Device Brand</p>
+
+                                                            <TextField
+                                                                id="Brand"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                disabled
+                                                                value={selectDevice?.Brand || "-"}
+                                                                onChange={handleInputChange}
+                                                                style={{ color: "black" }}
+                                                                InputProps={{
+                                                                    style: {
+                                                                        backgroundColor: "#e8e8e8", // Dark background color
+                                                                        color: "#000000", // Light text color
+                                                                    },
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Device Model</p>
+
+                                                            <TextField
+                                                                id="Model"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                disabled
+                                                                value={selectDevice?.Model || "-"}
+                                                                onChange={handleInputChange}
+                                                                style={{ color: "black" }}
+                                                                InputProps={{
+                                                                    style: {
+                                                                        backgroundColor: "#e8e8e8", // Dark background color
+                                                                        color: "#000000", // Light text color
+                                                                    },
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Device SKU</p>
+
+                                                            <TextField
+                                                                id="Sku"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                disabled
+                                                                value={selectDevice?.Sku || "-"}
+                                                                onChange={handleInputChange}
+                                                                style={{ color: "black" }}
+                                                                InputProps={{
+                                                                    style: {
+                                                                        backgroundColor: "#e8e8e8", // Dark background color
+                                                                        color: "#000000", // Light text color
+                                                                    },
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+
+
+                                                </Grid>
+
+                                                <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Operation Service Subject</p>
+                                                            <Select
+                                                                native
+                                                                value={createConfig.OperationServiceID ?? ""}
+                                                                onChange={handleChangeOperation}
+                                                                inputProps={{
+                                                                    name: "OperationServiceID",
+                                                                }}
+                                                            >
+                                                                <option value={0} key={0}>
+                                                                    กรุณา เลือก operation service subject
+                                                                </option>
+                                                                {operationService.map((item: Partial<ListOperationServiceInterface>) => (
+                                                                    <option key={item.Id} value={item.Id!}>{item.OperationSubject}</option>
+                                                                ))}
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Operation Site Name</p>
+
+                                                            <TextField
+                                                                id="OperationSiteName"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                disabled
+                                                                value={selectOperationService?.OperationSiteName || "-"}
+                                                                onChange={handleInputChange}
+                                                                style={{ color: "black" }}
+                                                                InputProps={{
+                                                                    style: {
+                                                                        backgroundColor: "#e8e8e8", // Dark background color
+                                                                        color: "#000000", // Light text color
+                                                                    },
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Operation ScopeOfWorkURL</p>
+
+                                                            <TextField
+                                                                id="ScopeOfWorkURL"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                disabled
+                                                                value={selectOperationService?.ScopeOfWorkURL || "-"}
+                                                                onChange={handleInputChange}
+                                                                style={{ color: "black" }}
+                                                                InputProps={{
+                                                                    style: {
+                                                                        backgroundColor: "#e8e8e8", // Dark background color
+                                                                        color: "#000000", // Light text color
+                                                                    },
+                                                                    endAdornment: selectOperationService?.ScopeOfWorkURL ? (
+                                                                        <Tooltip title="Copy URL">
+                                                                            <IconButton
+                                                                                onClick={handleCopyClick}
+                                                                                size="small"
+                                                                                style={{ marginLeft: 8 }}
+                                                                            >
+                                                                                <ContentCopy style={{ color: "#0000EE" }} />
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                    ) : null,
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+
+
+                                                </Grid>
+
+                                                <div style={{ marginLeft: "6.5%" }} className="flex justify-between px-5 py-3">
+                                                    <Button
                                                         variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        value={createConfig.Note || ""}
-                                                        onChange={handleInputChange}
-                                                        style={{ color: "black" }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>FilePath</p>
-
-                                                    <TextField
-                                                        id="FilePath"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        value={createConfig.FilePath || ""}
-                                                        onChange={handleInputChange}
-                                                        style={{ color: "black" }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Device Serial Number</p>
-                                                    <Select
-                                                        native
-                                                        value={createConfig.DeviceID ?? ""}
-                                                        onChange={handleChangeDevice}
-                                                        inputProps={{
-                                                            name: "DeviceID",
+                                                        color="warning"
+                                                        onClick={handleDiscard}
+                                                        sx={{
+                                                            maxWidth: 75, // Set the maximum width of the button
+                                                            maxHeight: 60, // Set the maximum height of the button
                                                         }}
                                                     >
-                                                        <option value={0} key={0}>
-                                                            กรุณา เลือกอุปกรณ์
-                                                        </option>
-                                                        {device.map((item: DeviceInterface) => (
-                                                            <option key={item.Id} value={item.Id}>{item.Serial}</option>
-                                                        ))}
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-                                        </Grid>
-
-                                        <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
-
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Device Brand</p>
-
-                                                    <TextField
-                                                        id="Brand"
+                                                        Discard
+                                                    </Button>
+                                                    <Button
+                                                        style={{ marginRight: "6.5%" }}
                                                         variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        disabled
-                                                        value={selectDevice?.Brand || "-"}
-                                                        onChange={handleInputChange}
-                                                        style={{ color: "black" }}
-                                                        InputProps={{
-                                                            style: {
-                                                                backgroundColor: "#e8e8e8", // Dark background color
-                                                                color: "#000000", // Light text color
-                                                            },
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Device Model</p>
-
-                                                    <TextField
-                                                        id="Model"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        disabled
-                                                        value={selectDevice?.Model || "-"}
-                                                        onChange={handleInputChange}
-                                                        style={{ color: "black" }}
-                                                        InputProps={{
-                                                            style: {
-                                                                backgroundColor: "#e8e8e8", // Dark background color
-                                                                color: "#000000", // Light text color
-                                                            },
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Device SKU</p>
-
-                                                    <TextField
-                                                        id="Sku"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        disabled
-                                                        value={selectDevice?.Sku || "-"}
-                                                        onChange={handleInputChange}
-                                                        style={{ color: "black" }}
-                                                        InputProps={{
-                                                            style: {
-                                                                backgroundColor: "#e8e8e8", // Dark background color
-                                                                color: "#000000", // Light text color
-                                                            },
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-
-
-                                        </Grid>
-
-                                        <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Operation Service Subject</p>
-                                                    <Select
-                                                        native
-                                                        value={createConfig.OperationServiceID ?? ""}
-                                                        onChange={handleChangeOperation}
-                                                        inputProps={{
-                                                            name: "OperationServiceID",
+                                                        color="info"
+                                                        onClick={submit}
+                                                        sx={{
+                                                            maxWidth: 75, // Set the maximum width of the button
+                                                            maxHeight: 60, // Set the maximum height of the button
                                                         }}
                                                     >
-                                                        <option value={0} key={0}>
-                                                            กรุณา เลือก operation service subject
-                                                        </option>
-                                                        {operationService.map((item: Partial<ListOperationServiceInterface>) => (
-                                                            <option key={item.Id} value={item.Id!}>{item.OperationSubject}</option>
-                                                        ))}
+                                                        Submit
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            <Divider sx={{ borderColor: "border-gray-600" }} />
+                                            <div className="flex-1 p-3 justify-center">
+                                                <div style={{ overflowX: 'auto', maxHeight: '38vh' }}>
+                                                    <TableContainer  >
+                                                        <Table aria-label="simple table">
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell align="center" width="12%"> Note </TableCell>
+                                                                    <TableCell align="center" width="10%"> FilePath </TableCell>
+                                                                    <TableCell align="center" width="5%"> Brand </TableCell>
+                                                                    <TableCell align="center" width="10%"> Model </TableCell>
+                                                                    <TableCell align="center" width="5%"> Serial </TableCell>
+                                                                    <TableCell align="center" width="12%"> License </TableCell>
+                                                                    <TableCell align="center" width="10%"> SKU </TableCell>
+                                                                    <TableCell align="center" width="5%"> Edit </TableCell>
+                                                                    <TableCell align="center" width="5%"> Delete </TableCell>
 
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Operation Site Name</p>
+                                                                </TableRow>
+                                                            </TableHead>
 
-                                                    <TextField
-                                                        id="OperationSiteName"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        disabled
-                                                        value={selectOperationService?.OperationSiteName || "-"}
-                                                        onChange={handleInputChange}
-                                                        style={{ color: "black" }}
-                                                        InputProps={{
-                                                            style: {
-                                                                backgroundColor: "#e8e8e8", // Dark background color
-                                                                color: "#000000", // Light text color
-                                                            },
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Operation ScopeOfWorkURL</p>
-
-                                                    <TextField
-                                                        id="ScopeOfWorkURL"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        disabled
-                                                        value={selectOperationService?.ScopeOfWorkURL || "-"}
-                                                        onChange={handleInputChange}
-                                                        style={{ color: "black" }}
-                                                        InputProps={{
-                                                            style: {
-                                                                backgroundColor: "#e8e8e8", // Dark background color
-                                                                color: "#000000", // Light text color
-                                                            },
-                                                            endAdornment: selectOperationService?.ScopeOfWorkURL ? (
-                                                                <Tooltip title="Copy URL">
-                                                                    <IconButton
-                                                                        onClick={handleCopyClick}
-                                                                        size="small"
-                                                                        style={{ marginLeft: 8 }}
+                                                            <TableBody>
+                                                                {listConfigs.map((item: DeviceConfigBackupInterface) => (
+                                                                    <TableRow
+                                                                        key={item.Id}
+                                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                                     >
-                                                                        <ContentCopy style={{ color: "#0000EE" }} />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            ) : null,
+                                                                        <TableCell align="center">{item.Note}</TableCell>
+                                                                        <TableCell align="center">{item.FilePath}</TableCell>
+                                                                        <TableCell align="center">{item.Device?.Brand}</TableCell>
+                                                                        <TableCell align="center">{item.Device?.Model}</TableCell>
+                                                                        <TableCell align="center">{item.Device?.Serial}</TableCell>
+                                                                        <TableCell align="center">{item.Device?.License}</TableCell>
+                                                                        <TableCell align="center">{item.Device?.Sku}</TableCell>
+                                                                        <TableCell>
+                                                                            {
+                                                                                <Button
+                                                                                    variant='outlined'
+                                                                                    color='warning'
+                                                                                    sx={{
+                                                                                        maxWidth: 75, // Set the maximum width of the button
+                                                                                        maxHeight: 60, // Set the maximum height of the button
+                                                                                    }}
+                                                                                    onClick={() => handleUpdate(item)}
+                                                                                >
+                                                                                    Update
+                                                                                </Button>
+                                                                            }
+                                                                        </TableCell>
+                                                                        <TableCell align="center">
+                                                                            {
+
+                                                                                <Button
+                                                                                    variant='outlined'
+                                                                                    color='error'
+                                                                                    onClick={() => { handleDialogDeleteOpen(item.Id!) }}
+                                                                                    sx={{
+                                                                                        maxWidth: 75, // Set the maximum width of the button
+                                                                                        maxHeight: 60, // Set the maximum height of the button
+                                                                                    }}
+                                                                                >
+                                                                                    Delete
+                                                                                </Button>
+                                                                            }
+
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                ))}
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                    <Dialog
+                                                        open={openDelete}
+                                                        onClose={handleDialogDeleteclose}
+                                                        aria-labelledby="alert-dialog-title"
+                                                        aria-describedby="alert-dialog-description"
+                                                        PaperProps={{
+                                                            style: {
+                                                                backgroundColor: "#f8f9fa",
+                                                            },
                                                         }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
+                                                    >
+                                                        <DialogTitle id="alert-dialog-title">
+                                                            {`คุณต้องการลบข้อมูล config ของอุปกรณ์ : ${listConfigs.filter((emp) => (emp.Id === deleteID)).at(0)?.Device?.Brand} จริงหรือไม่`}
+                                                        </DialogTitle>
+                                                        <DialogContent>
+                                                            <DialogContentText id="alert-dialog-description">
+                                                                หากคุณลบข้อมูลนี้แล้วนั้น คุณจะไม่สามารถกู้คืนได้อีก คุณต้องการลบข้อมูลนี้ใช่หรือไม่
+                                                            </DialogContentText>
+                                                        </DialogContent>
+                                                        <DialogActions>
+                                                            <Button onClick={handleDialogDeleteclose}>ยกเลิก</Button>
+                                                            <Button onClick={handleDelete} className="bg-red" autoFocus>
+                                                                ยืนยัน
+                                                            </Button>
+                                                        </DialogActions>
 
-
-                                        </Grid>
-
-                                        <div style={{ marginLeft: "6.5%" }} className="flex justify-between px-5 py-3">
-                                            <Button
-                                                variant="outlined"
-                                                color="warning"
-                                                onClick={handleDiscard}
-                                                sx={{
-                                                    maxWidth: 75, // Set the maximum width of the button
-                                                    maxHeight: 60, // Set the maximum height of the button
-                                                }}
-                                            >
-                                                Discard
-                                            </Button>
-                                            <Button
-                                                style={{ marginRight: "6.5%" }}
-                                                variant="outlined"
-                                                color="info"
-                                                onClick={submit}
-                                                sx={{
-                                                    maxWidth: 75, // Set the maximum width of the button
-                                                    maxHeight: 60, // Set the maximum height of the button
-                                                }}
-                                            >
-                                                Submit
-                                            </Button>
+                                                    </Dialog>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <Divider sx={{ borderColor: "border-gray-600" }} />
-                                    <div style={{ height: 800, minHeight: "100%", width: "100%", backgroundColor: "#f8f9fa" }} >
-                                        <TableContainer  >
-                                            <Table aria-label="simple table">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell align="center" width="12%"> Note </TableCell>
-                                                        <TableCell align="center" width="10%"> FilePath </TableCell>
-                                                        <TableCell align="center" width="5%"> Brand </TableCell>
-                                                        <TableCell align="center" width="10%"> Model </TableCell>
-                                                        <TableCell align="center" width="5%"> Serial </TableCell>
-                                                        <TableCell align="center" width="12%"> License </TableCell>
-                                                        <TableCell align="center" width="10%"> SKU </TableCell>
-                                                        <TableCell align="center" width="5%"> Edit </TableCell>
-                                                        <TableCell align="center" width="5%"> Delete </TableCell>
-
-                                                    </TableRow>
-                                                </TableHead>
-
-                                                <TableBody>
-                                                    {listConfigs.map((item: DeviceConfigBackupInterface) => (
-                                                        <TableRow
-                                                            key={item.Id}
-                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                        >
-                                                            <TableCell align="center">{item.Note}</TableCell>
-                                                            <TableCell align="center">{item.FilePath}</TableCell>
-                                                            <TableCell align="center">{item.Device?.Brand}</TableCell>
-                                                            <TableCell align="center">{item.Device?.Model}</TableCell>
-                                                            <TableCell align="center">{item.Device?.Serial}</TableCell>
-                                                            <TableCell align="center">{item.Device?.License}</TableCell>
-                                                            <TableCell align="center">{item.Device?.Sku}</TableCell>
-                                                            <TableCell>
-                                                                {
-                                                                    <Button
-                                                                        variant='outlined'
-                                                                        color='warning'
-                                                                        sx={{
-                                                                            maxWidth: 75, // Set the maximum width of the button
-                                                                            maxHeight: 60, // Set the maximum height of the button
-                                                                        }}
-                                                                        onClick={() => handleUpdate(item)}
-                                                                    >
-                                                                        Update
-                                                                    </Button>
-                                                                }
-                                                            </TableCell>
-                                                            <TableCell align="center">
-                                                                {
-
-                                                                    <Button
-                                                                        variant='outlined'
-                                                                        color='error'
-                                                                        onClick={() => { handleDialogDeleteOpen(item.Id!) }}
-                                                                        sx={{
-                                                                            maxWidth: 75, // Set the maximum width of the button
-                                                                            maxHeight: 60, // Set the maximum height of the button
-                                                                        }}
-                                                                    >
-                                                                        Delete
-                                                                    </Button>
-                                                                }
-
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                        <Dialog
-                                            open={openDelete}
-                                            onClose={handleDialogDeleteclose}
-                                            aria-labelledby="alert-dialog-title"
-                                            aria-describedby="alert-dialog-description"
-                                            PaperProps={{
-                                                style: {
-                                                    backgroundColor: "#f8f9fa",
-                                                },
-                                            }}
-                                        >
-                                            <DialogTitle id="alert-dialog-title">
-                                                {`คุณต้องการลบข้อมูล config ของอุปกรณ์ : ${listConfigs.filter((emp) => (emp.Id === deleteID)).at(0)?.Device?.Brand} จริงหรือไม่`}
-                                            </DialogTitle>
-                                            <DialogContent>
-                                                <DialogContentText id="alert-dialog-description">
-                                                    หากคุณลบข้อมูลนี้แล้วนั้น คุณจะไม่สามารถกู้คืนได้อีก คุณต้องการลบข้อมูลนี้ใช่หรือไม่
-                                                </DialogContentText>
-                                            </DialogContent>
-                                            <DialogActions>
-                                                <Button onClick={handleDialogDeleteclose}>ยกเลิก</Button>
-                                                <Button onClick={handleDelete} className="bg-red" autoFocus>
-                                                    ยืนยัน
-                                                </Button>
-                                            </DialogActions>
-
-                                        </Dialog>
-
-                                    </div>
-                                </div>
-                            </CardContent>
+                                    </CardContent>
 
 
-                        </TabPanel>
-                        <TabPanel value="2">
-                        <CardContent style={{ backgroundColor: "#f8f9fa" }} sx={{ p: 0, px: 2, flexGrow: 1 }}>
-                                <div>
-                                    <div style={{ marginTop: "10px" }}>
+                                </TabPanel>
+                                <TabPanel value="2">
+                                    <CardContent style={{ backgroundColor: "#f8f9fa" }} sx={{ p: 0, px: 2, flexGrow: 1 }}>
+                                    <div className="flex flex-col" style={{ background: "#f8f9fa" }}>
+                                    <div style={{ overflowX: 'auto' }}> {/* Add this div for horizontal scrolling */}
 
-                                        <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Note</p>
+                                                <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Note</p>
 
-                                                    <TextField
-                                                        id="Note"
+                                                            <TextField
+                                                                id="Note"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                value={createConfigSoftware.Note || ""}
+                                                                onChange={handleInputChangeSoftware}
+                                                                style={{ color: "black" }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>FilePath</p>
+
+                                                            <TextField
+                                                                id="FilePath"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                value={createConfigSoftware.FilePath || ""}
+                                                                onChange={handleInputChangeSoftware}
+                                                                style={{ color: "black" }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Software Serial Number</p>
+                                                            <Select
+                                                                native
+                                                                value={createConfigSoftware.SoftwareID ?? ""}
+                                                                onChange={handleChangeSoftware}
+                                                                inputProps={{
+                                                                    name: "SoftwareID",
+                                                                }}
+                                                            >
+                                                                <option value={0} key={0}>
+                                                                    กรุณา เลือกซอฟแวร์
+                                                                </option>
+                                                                {software.map((item: SoftwareInterface) => (
+                                                                    <option key={item.Id} value={item.Id}>{item.Sku}</option>
+                                                                ))}
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                </Grid>
+
+                                                <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
+
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Software Brand</p>
+
+                                                            <TextField
+                                                                id="Brand"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                disabled
+                                                                value={selectSoftware?.Brand || "-"}
+                                                                onChange={handleInputChangeSoftware}
+                                                                style={{ color: "black" }}
+                                                                InputProps={{
+                                                                    style: {
+                                                                        backgroundColor: "#e8e8e8", // Dark background color
+                                                                        color: "#000000", // Light text color
+                                                                    },
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Software Model</p>
+
+                                                            <TextField
+                                                                id="Model"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                disabled
+                                                                value={selectSoftware?.Model || "-"}
+                                                                onChange={handleInputChangeSoftware}
+                                                                style={{ color: "black" }}
+                                                                InputProps={{
+                                                                    style: {
+                                                                        backgroundColor: "#e8e8e8", // Dark background color
+                                                                        color: "#000000", // Light text color
+                                                                    },
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Software License</p>
+
+                                                            <TextField
+                                                                id="Sku"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                disabled
+                                                                value={selectSoftware?.License || "-"}
+                                                                onChange={handleInputChangeSoftware}
+                                                                style={{ color: "black" }}
+                                                                InputProps={{
+                                                                    style: {
+                                                                        backgroundColor: "#e8e8e8", // Dark background color
+                                                                        color: "#000000", // Light text color
+                                                                    },
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+
+
+                                                </Grid>
+
+                                                <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Operation Service Subject</p>
+                                                            <Select
+                                                                native
+                                                                value={createConfigSoftware.OperationServiceID ?? ""}
+                                                                onChange={handleChangeOperationSoftware}
+                                                                inputProps={{
+                                                                    name: "OperationServiceID",
+                                                                }}
+                                                            >
+                                                                <option value={0} key={0}>
+                                                                    กรุณา เลือก operation service subject
+                                                                </option>
+                                                                {operationService.map((item: Partial<ListOperationServiceInterface>) => (
+                                                                    <option key={item.Id} value={item.Id!}>{item.OperationSubject}</option>
+                                                                ))}
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Operation Site Name</p>
+
+                                                            <TextField
+                                                                id="OperationSiteName"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                disabled
+                                                                value={selectOperationServiceSoftware?.OperationSiteName || "-"}
+                                                                onChange={handleInputChangeSoftware}
+                                                                style={{ color: "black" }}
+                                                                InputProps={{
+                                                                    style: {
+                                                                        backgroundColor: "#e8e8e8", // Dark background color
+                                                                        color: "#000000", // Light text color
+                                                                    },
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={3.5}>
+                                                        <FormControl fullWidth variant="outlined">
+                                                            <p style={{ color: "black" }}>Operation ScopeOfWorkURL</p>
+
+                                                            <TextField
+                                                                id="ScopeOfWorkURL"
+                                                                variant="outlined"
+                                                                type="string"
+                                                                size="medium"
+                                                                disabled
+                                                                value={selectOperationServiceSoftware?.ScopeOfWorkURL || "-"}
+                                                                onChange={handleInputChangeSoftware}
+                                                                style={{ color: "black" }}
+                                                                InputProps={{
+                                                                    style: {
+                                                                        backgroundColor: "#e8e8e8", // Dark background color
+                                                                        color: "#000000", // Light text color
+                                                                    },
+                                                                    endAdornment: selectOperationService?.ScopeOfWorkURL ? (
+                                                                        <Tooltip title="Copy URL">
+                                                                            <IconButton
+                                                                                onClick={handleCopyClick}
+                                                                                size="small"
+                                                                                style={{ marginLeft: 8 }}
+                                                                            >
+                                                                                <ContentCopy style={{ color: "#0000EE" }} />
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                    ) : null,
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+
+
+                                                </Grid>
+
+                                                <div style={{ marginLeft: "6.5%" }} className="flex justify-between px-5 py-3">
+                                                    <Button
                                                         variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        value={createConfigSoftware.Note || ""}
-                                                        onChange={handleInputChangeSoftware}
-                                                        style={{ color: "black" }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>FilePath</p>
-
-                                                    <TextField
-                                                        id="FilePath"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        value={createConfigSoftware.FilePath || ""}
-                                                        onChange={handleInputChangeSoftware}
-                                                        style={{ color: "black" }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Software Serial Number</p>
-                                                    <Select
-                                                        native
-                                                        value={createConfigSoftware.SoftwareID ?? ""}
-                                                        onChange={handleChangeSoftware}
-                                                        inputProps={{
-                                                            name: "SoftwareID",
+                                                        color="warning"
+                                                        onClick={handleDiscardSoftware}
+                                                        sx={{
+                                                            maxWidth: 75, // Set the maximum width of the button
+                                                            maxHeight: 60, // Set the maximum height of the button
                                                         }}
                                                     >
-                                                        <option value={0} key={0}>
-                                                            กรุณา เลือกซอฟแวร์
-                                                        </option>
-                                                        {software.map((item: SoftwareInterface) => (
-                                                            <option key={item.Id} value={item.Id}>{item.Sku}</option>
-                                                        ))}
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-                                        </Grid>
-
-                                        <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
-
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Software Brand</p>
-
-                                                    <TextField
-                                                        id="Brand"
+                                                        Discard
+                                                    </Button>
+                                                    <Button
+                                                        style={{ marginRight: "6.5%" }}
                                                         variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        disabled
-                                                        value={selectSoftware?.Brand || "-"}
-                                                        onChange={handleInputChangeSoftware}
-                                                        style={{ color: "black" }}
-                                                        InputProps={{
-                                                            style: {
-                                                                backgroundColor: "#e8e8e8", // Dark background color
-                                                                color: "#000000", // Light text color
-                                                            },
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Software Model</p>
-
-                                                    <TextField
-                                                        id="Model"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        disabled
-                                                        value={selectSoftware?.Model || "-"}
-                                                        onChange={handleInputChangeSoftware}
-                                                        style={{ color: "black" }}
-                                                        InputProps={{
-                                                            style: {
-                                                                backgroundColor: "#e8e8e8", // Dark background color
-                                                                color: "#000000", // Light text color
-                                                            },
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Software License</p>
-
-                                                    <TextField
-                                                        id="Sku"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        disabled
-                                                        value={selectSoftware?.License || "-"}
-                                                        onChange={handleInputChangeSoftware}
-                                                        style={{ color: "black" }}
-                                                        InputProps={{
-                                                            style: {
-                                                                backgroundColor: "#e8e8e8", // Dark background color
-                                                                color: "#000000", // Light text color
-                                                            },
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-
-
-                                        </Grid>
-
-                                        <Grid container spacing={3} sx={{ padding: 1 }} style={{ marginLeft: "5%" }}>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Operation Service Subject</p>
-                                                    <Select
-                                                        native
-                                                        value={createConfigSoftware.OperationServiceID ?? ""}
-                                                        onChange={handleChangeOperationSoftware}
-                                                        inputProps={{
-                                                            name: "OperationServiceID",
+                                                        color="info"
+                                                        onClick={submitSoftware}
+                                                        sx={{
+                                                            maxWidth: 75, // Set the maximum width of the button
+                                                            maxHeight: 60, // Set the maximum height of the button
                                                         }}
                                                     >
-                                                        <option value={0} key={0}>
-                                                            กรุณา เลือก operation service subject
-                                                        </option>
-                                                        {operationService.map((item: Partial<ListOperationServiceInterface>) => (
-                                                            <option key={item.Id} value={item.Id!}>{item.OperationSubject}</option>
-                                                        ))}
+                                                        Submit
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            <Divider sx={{ borderColor: "border-gray-600" }} />
+                                            <div className="flex-1 p-3 justify-center">
+                                                <div style={{ overflowX: 'auto', maxHeight: '38vh' }}>
+                                                    <TableContainer  >
+                                                        <Table aria-label="simple table">
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell align="center" width="12%"> Note </TableCell>
+                                                                    <TableCell align="center" width="10%"> FilePath </TableCell>
+                                                                    <TableCell align="center" width="5%"> Brand </TableCell>
+                                                                    <TableCell align="center" width="10%"> Model </TableCell>
+                                                                    <TableCell align="center" width="5%"> Quantity </TableCell>
+                                                                    <TableCell align="center" width="12%"> License </TableCell>
+                                                                    <TableCell align="center" width="10%"> SKU </TableCell>
+                                                                    <TableCell align="center" width="5%"> Edit </TableCell>
+                                                                    <TableCell align="center" width="5%"> Delete </TableCell>
 
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Operation Site Name</p>
+                                                                </TableRow>
+                                                            </TableHead>
 
-                                                    <TextField
-                                                        id="OperationSiteName"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        disabled
-                                                        value={selectOperationServiceSoftware?.OperationSiteName || "-"}
-                                                        onChange={handleInputChangeSoftware}
-                                                        style={{ color: "black" }}
-                                                        InputProps={{
-                                                            style: {
-                                                                backgroundColor: "#e8e8e8", // Dark background color
-                                                                color: "#000000", // Light text color
-                                                            },
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3.5}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <p style={{ color: "black" }}>Operation ScopeOfWorkURL</p>
-
-                                                    <TextField
-                                                        id="ScopeOfWorkURL"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        disabled
-                                                        value={selectOperationServiceSoftware?.ScopeOfWorkURL || "-"}
-                                                        onChange={handleInputChangeSoftware}
-                                                        style={{ color: "black" }}
-                                                        InputProps={{
-                                                            style: {
-                                                                backgroundColor: "#e8e8e8", // Dark background color
-                                                                color: "#000000", // Light text color
-                                                            },
-                                                            endAdornment: selectOperationService?.ScopeOfWorkURL ? (
-                                                                <Tooltip title="Copy URL">
-                                                                    <IconButton
-                                                                        onClick={handleCopyClick}
-                                                                        size="small"
-                                                                        style={{ marginLeft: 8 }}
+                                                            <TableBody>
+                                                                {listConfigSoftware.map((item: SoftwareConfigBackupInterface) => (
+                                                                    <TableRow
+                                                                        key={item.Id}
+                                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                                     >
-                                                                        <ContentCopy style={{ color: "#0000EE" }} />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            ) : null,
+                                                                        <TableCell align="center">{item.Note}</TableCell>
+                                                                        <TableCell align="center">{item.FilePath}</TableCell>
+                                                                        <TableCell align="center">{item.Software?.Brand}</TableCell>
+                                                                        <TableCell align="center">{item.Software?.Model}</TableCell>
+                                                                        <TableCell align="center">{item.Software?.Quantity}</TableCell>
+                                                                        <TableCell align="center">{item.Software?.License}</TableCell>
+                                                                        <TableCell align="center">{item.Software?.Sku}</TableCell>
+                                                                        <TableCell>
+                                                                            {
+                                                                                <Button
+                                                                                    variant='outlined'
+                                                                                    color='warning'
+                                                                                    sx={{
+                                                                                        maxWidth: 75, // Set the maximum width of the button
+                                                                                        maxHeight: 60, // Set the maximum height of the button
+                                                                                    }}
+                                                                                    onClick={() => handleUpdateSoftware(item)}
+                                                                                >
+                                                                                    Update
+                                                                                </Button>
+                                                                            }
+                                                                        </TableCell>
+                                                                        <TableCell align="center">
+                                                                            {
+
+                                                                                <Button
+                                                                                    variant='outlined'
+                                                                                    color='error'
+                                                                                    onClick={() => { handleDialogDeleteOpen(item.Id!) }}
+                                                                                    sx={{
+                                                                                        maxWidth: 75, // Set the maximum width of the button
+                                                                                        maxHeight: 60, // Set the maximum height of the button
+                                                                                    }}
+                                                                                >
+                                                                                    Delete
+                                                                                </Button>
+                                                                            }
+
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                ))}
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                    <Dialog
+                                                        open={openDelete}
+                                                        onClose={handleDialogDeleteclose}
+                                                        aria-labelledby="alert-dialog-title"
+                                                        aria-describedby="alert-dialog-description"
+                                                        PaperProps={{
+                                                            style: {
+                                                                backgroundColor: "#f8f9fa",
+                                                            },
                                                         }}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
+                                                    >
+                                                        <DialogTitle id="alert-dialog-title">
+                                                            {`คุณต้องการลบข้อมูล config ของซอฟแวร์ : ${listConfigSoftware.filter((emp) => (emp.Id === deleteID)).at(0)?.Software?.Brand} จริงหรือไม่`}
+                                                        </DialogTitle>
+                                                        <DialogContent>
+                                                            <DialogContentText id="alert-dialog-description">
+                                                                หากคุณลบข้อมูลนี้แล้วนั้น คุณจะไม่สามารถกู้คืนได้อีก คุณต้องการลบข้อมูลนี้ใช่หรือไม่
+                                                            </DialogContentText>
+                                                        </DialogContent>
+                                                        <DialogActions>
+                                                            <Button onClick={handleDialogDeleteclose}>ยกเลิก</Button>
+                                                            <Button onClick={handleDeleteSoftware} className="bg-red" autoFocus>
+                                                                ยืนยัน
+                                                            </Button>
+                                                        </DialogActions>
 
+                                                    </Dialog>
 
-                                        </Grid>
-
-                                        <div style={{ marginLeft: "6.5%" }} className="flex justify-between px-5 py-3">
-                                            <Button
-                                                variant="outlined"
-                                                color="warning"
-                                                onClick={handleDiscardSoftware}
-                                                sx={{
-                                                    maxWidth: 75, // Set the maximum width of the button
-                                                    maxHeight: 60, // Set the maximum height of the button
-                                                }}
-                                            >
-                                                Discard
-                                            </Button>
-                                            <Button
-                                                style={{ marginRight: "6.5%" }}
-                                                variant="outlined"
-                                                color="info"
-                                                onClick={submitSoftware}
-                                                sx={{
-                                                    maxWidth: 75, // Set the maximum width of the button
-                                                    maxHeight: 60, // Set the maximum height of the button
-                                                }}
-                                            >
-                                                Submit
-                                            </Button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <Divider sx={{ borderColor: "border-gray-600" }} />
-                                    <div style={{ height: 800, minHeight: "100%", width: "100%", backgroundColor: "#f8f9fa" }} >
-                                        <TableContainer  >
-                                            <Table aria-label="simple table">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell align="center" width="12%"> Note </TableCell>
-                                                        <TableCell align="center" width="10%"> FilePath </TableCell>
-                                                        <TableCell align="center" width="5%"> Brand </TableCell>
-                                                        <TableCell align="center" width="10%"> Model </TableCell>
-                                                        <TableCell align="center" width="5%"> Quantity </TableCell>
-                                                        <TableCell align="center" width="12%"> License </TableCell>
-                                                        <TableCell align="center" width="10%"> SKU </TableCell>
-                                                        <TableCell align="center" width="5%"> Edit </TableCell>
-                                                        <TableCell align="center" width="5%"> Delete </TableCell>
-
-                                                    </TableRow>
-                                                </TableHead>
-
-                                                <TableBody>
-                                                    {listConfigSoftware.map((item: SoftwareConfigBackupInterface) => (
-                                                        <TableRow
-                                                            key={item.Id}
-                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                        >
-                                                            <TableCell align="center">{item.Note}</TableCell>
-                                                            <TableCell align="center">{item.FilePath}</TableCell>
-                                                            <TableCell align="center">{item.Software?.Brand}</TableCell>
-                                                            <TableCell align="center">{item.Software?.Model}</TableCell>
-                                                            <TableCell align="center">{item.Software?.Quantity}</TableCell>
-                                                            <TableCell align="center">{item.Software?.License}</TableCell>
-                                                            <TableCell align="center">{item.Software?.Sku}</TableCell>
-                                                            <TableCell>
-                                                                {
-                                                                    <Button
-                                                                        variant='outlined'
-                                                                        color='warning'
-                                                                        sx={{
-                                                                            maxWidth: 75, // Set the maximum width of the button
-                                                                            maxHeight: 60, // Set the maximum height of the button
-                                                                        }}
-                                                                        onClick={() => handleUpdateSoftware(item)}
-                                                                    >
-                                                                        Update
-                                                                    </Button>
-                                                                }
-                                                            </TableCell>
-                                                            <TableCell align="center">
-                                                                {
-
-                                                                    <Button
-                                                                        variant='outlined'
-                                                                        color='error'
-                                                                        onClick={() => { handleDialogDeleteOpen(item.Id!) }}
-                                                                        sx={{
-                                                                            maxWidth: 75, // Set the maximum width of the button
-                                                                            maxHeight: 60, // Set the maximum height of the button
-                                                                        }}
-                                                                    >
-                                                                        Delete
-                                                                    </Button>
-                                                                }
-
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                        <Dialog
-                                            open={openDelete}
-                                            onClose={handleDialogDeleteclose}
-                                            aria-labelledby="alert-dialog-title"
-                                            aria-describedby="alert-dialog-description"
-                                            PaperProps={{
-                                                style: {
-                                                    backgroundColor: "#f8f9fa",
-                                                },
-                                            }}
-                                        >
-                                            <DialogTitle id="alert-dialog-title">
-                                                {`คุณต้องการลบข้อมูล config ของซอฟแวร์ : ${listConfigSoftware.filter((emp) => (emp.Id === deleteID)).at(0)?.Software?.Brand} จริงหรือไม่`}
-                                            </DialogTitle>
-                                            <DialogContent>
-                                                <DialogContentText id="alert-dialog-description">
-                                                    หากคุณลบข้อมูลนี้แล้วนั้น คุณจะไม่สามารถกู้คืนได้อีก คุณต้องการลบข้อมูลนี้ใช่หรือไม่
-                                                </DialogContentText>
-                                            </DialogContent>
-                                            <DialogActions>
-                                                <Button onClick={handleDialogDeleteclose}>ยกเลิก</Button>
-                                                <Button onClick={handleDeleteSoftware} className="bg-red" autoFocus>
-                                                    ยืนยัน
-                                                </Button>
-                                            </DialogActions>
-
-                                        </Dialog>
-
-                                    </div>
-                                </div>
-                            </CardContent>
+                                    </CardContent>
 
 
-                        </TabPanel>
-                    </TabContext>
+                                </TabPanel>
+                            </TabContext>
+                        </div>
+                    </div>
 
 
                 </ThemeProvider>
-            </Layout>
+            </Box>
         </LocalizationProvider >
     );
 };

@@ -5,7 +5,6 @@ import Grid from '@mui/material/Grid'
 import React from 'react'
 
 import { useRouter } from 'next/navigation'
-import Layout from '@/app/(web)/layout'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -17,6 +16,7 @@ import { ContractUpdateInterface } from '@/interfaces/IContract'
 import { ServiceCatalogInterface } from '@/interfaces/IServiceCatalog'
 import { getContractByID, UpdateContract } from '@/services/Contract/ContractServices'
 import { GetSlaTypeBySla, ListSlas, ListSlasByType, ListSlaTypes } from '@/services/Sla/SlaServices'
+import { Box } from '@mui/system'
 
 export default function ContractUpdate({ params: { slug } }: { params: { slug: string } }) {
 
@@ -36,11 +36,7 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
     const getContract = async (id: string | undefined) => {
         let res = await getContractByID(id)
         if (res && res.Status !== "error") {
-            console.log(res)
             setContract(res)
-            console.log("contract")
-            console.log(contract)
-
             if (res.ContractStart && res.ContractStart !== "") {
                 setContractStart(dayjs(res.ContractStart.substring(0, 10)));
             }
@@ -56,22 +52,19 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
     const getServiceCatalog = async () => {
 
         let res = await ListServiceCatalogs();
-        console.log(res);
         if (res) {
             setServiceCatalog(res);
         }
     }
     const getSlaByType = async (id: number) => {
-        if(slaTypeNumber==0){
+        if (slaTypeNumber == 0) {
             let res = await ListSlas();
-            console.log(res);
             if (res) {
                 setSla(res);
             }
 
-        }else{
+        } else {
             let res = await ListSlasByType(id);
-            console.log(res);
             if (res) {
                 setSla(res);
             }
@@ -79,21 +72,17 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
     }
     const getSlaTypeByTypeId = async (id: number) => {
         let res = await GetSlaTypeBySla(id);
-            console.log(res);
-            if (res) {
-                setSlaTypeNumber(res);
-            }
+        if (res) {
+            setSlaTypeNumber(res);
+        }
     }
     const getSlaType = async () => {
         let res = await ListSlaTypes();
-        console.log(res);
         if (res) {
             setSlaType(res);
         }
     }
     React.useEffect(() => {
-        // console.log("slug");
-        // console.log(slug);
         getContract(slug)
         getServiceCatalog();
         getSlaType();
@@ -115,19 +104,19 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
         return val;
     };
     const submit = async () => {
-        // console.log(customer)
+
         try {
             contract.ContractStart = contractStart.format("YYYY-MM-DD").toString()
             contract.ContractStop = contractStop.format("YYYY-MM-DD").toString()
-           // Calculate notice dates
-           let noticeDate1 = contractStop.clone().subtract(90, 'days');
-           let noticeDate2 = contractStop.clone().subtract(60, 'days');
-           let noticeDate3 = contractStop.clone().subtract(30, 'days');
+            // Calculate notice dates
+            let noticeDate1 = contractStop.clone().subtract(90, 'days');
+            let noticeDate2 = contractStop.clone().subtract(60, 'days');
+            let noticeDate3 = contractStop.clone().subtract(30, 'days');
 
-           // Set the notice dates in the contract object
-           contract.NoticeDate1 = noticeDate1.format("YYYY-MM-DD");
-           contract.NoticeDate2 = noticeDate2.format("YYYY-MM-DD");
-           contract.NoticeDate3 = noticeDate3.format("YYYY-MM-DD");
+            // Set the notice dates in the contract object
+            contract.NoticeDate1 = noticeDate1.format("YYYY-MM-DD");
+            contract.NoticeDate2 = noticeDate2.format("YYYY-MM-DD");
+            contract.NoticeDate3 = noticeDate3.format("YYYY-MM-DD");
             if (contract.IncidentPerContract != null) {
                 contract.IncidentPerContract = contract.IncidentPerContract * 1
             }
@@ -146,13 +135,7 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
                 setError(true);
             }
 
-            // setTimeout(() => {
-            //     router.push("/contract")
-            // }, 3000)
-
-
         } catch (error) {
-            console.error("Error submitting contract data:", error);
             setAlertMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
             setError(true);
         }
@@ -209,7 +192,8 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Layout>
+            <Box height="100vh">
+
                 <ThemeProvider theme={theme}>
                     <div
                         className="flex flex-row justify-between w-full"
@@ -229,32 +213,32 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
                         ></CardHeader>
                     </div>
                     <Snackbar
-                            id="success"
-                            open={success}
-                            autoHideDuration={4000}
-                            onClose={handleClose}
-                            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                        >
-                            <Alert onClose={handleClose} severity="success">
-                                บันทึกข้อมูลสำเร็จ
-                            </Alert>
-                        </Snackbar>
+                        id="success"
+                        open={success}
+                        autoHideDuration={4000}
+                        onClose={handleClose}
+                        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                    >
+                        <Alert onClose={handleClose} severity="success">
+                            บันทึกข้อมูลสำเร็จ
+                        </Alert>
+                    </Snackbar>
 
-                        <Snackbar
-                            id="error"
-                            open={error}
-                            autoHideDuration={4000}
-                            onClose={handleClose}
-                            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                        >
-                            <Alert onClose={handleClose} severity="error">
-                                {message}
-                            </Alert>
-                        </Snackbar>
+                    <Snackbar
+                        id="error"
+                        open={error}
+                        autoHideDuration={4000}
+                        onClose={handleClose}
+                        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                    >
+                        <Alert onClose={handleClose} severity="error">
+                            {message}
+                        </Alert>
+                    </Snackbar>
                     <Container maxWidth="lg">
 
 
-                    <div className="flex flex-col h-screen">
+                        <div className="flex flex-col">
                             <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
                                 <Grid item xs={5}>
                                     <FormControl fullWidth variant="outlined">
@@ -441,9 +425,9 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
                                             native
                                             value={slaTypeNumber ?? 1}
                                             onChange={handleInputChangeSlaType}
-                                            // inputProps={{
-                                            //     name: "SlaID",
-                                            // }}
+                                        // inputProps={{
+                                        //     name: "SlaID",
+                                        // }}
                                         >
                                             <option value={0} key={0}>
                                                 กรุณา เลือกชนิดของ sla type
@@ -530,7 +514,7 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
                         </div>
                     </Container>
                 </ThemeProvider>
-            </Layout>
+            </Box>
         </LocalizationProvider>
     );
 }

@@ -7,10 +7,6 @@ import React from 'react'
 import { CustomerAddressInterface, CustomerGroupInterface, CustomerInterface } from '@/interfaces/ICustomer'
 import { UpdateCustomer, GetCustomerByID, ListCustomerGroups, ListCustomerAddresses, CreateCustomerAddress, DeleteCustomerAddressById, UpdateCustomerAddress, GetCustomerAddressCustomerByID } from '@/services/Customer/CustomerServices'
 import { useRouter } from 'next/navigation'
-import Layout from '@/app/(web)/layout'
-import PhoneIcon from '@mui/icons-material/Phone';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import PersonPinIcon from '@mui/icons-material/PersonPin';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -24,10 +20,7 @@ export default function CustomerUpdate({ params: { slug } }: { params: { slug: s
     const getCustomer = async (id: string | undefined) => {
         let res = await GetCustomerByID(id)
         if (res && res.Status !== "error") {
-            console.log(res)
             setCustomer(res)
-            console.log("customer")
-            console.log(customer)
         }
     }
     const [customerGroup, setCustomerGroup] = React.useState<CustomerGroupInterface[]>([]);
@@ -37,12 +30,10 @@ export default function CustomerUpdate({ params: { slug } }: { params: { slug: s
             if (res && res.Status !== "error") {
                 setCustomerGroup(res)
             } else {
-                console.log(res)
                 setAlertMessage(res?.Message || "เกิดข้อผิดพลาดดึงข้อมูล Customer Group");
                 setError(true);
             }
         } catch (error) {
-            console.log(error)
             setAlertMessage("เกิดข้อผิดพลาดดึงข้อมูล Customer Group");
             setError(true);
         }
@@ -54,12 +45,10 @@ export default function CustomerUpdate({ params: { slug } }: { params: { slug: s
             if (res && res.Status !== "error") {
                 setCustomerAddress(res)
             } else {
-                console.log(res)
                 setAlertMessage(res?.Message || "เกิดข้อผิดพลาดดึงข้อมูล Customer Group");
                 setError(true);
             }
         } catch (error) {
-            console.log(error)
             setAlertMessage("เกิดข้อผิดพลาดดึงข้อมูล Customer Address");
             setError(true);
         }
@@ -73,7 +62,6 @@ export default function CustomerUpdate({ params: { slug } }: { params: { slug: s
                 if (res && res.Status !== "error") {
                     getCustomerAddress();
                 } else {
-                    console.log(res)
                     setAlertMessage(res?.Message || "เกิดข้อผิดพลาดในการอัพเดท customer address");
                     setError(true);
                 }
@@ -83,7 +71,6 @@ export default function CustomerUpdate({ params: { slug } }: { params: { slug: s
                 if (res && res.Status !== "error") {
                     getCustomerAddress();
                 } else {
-                    console.log(res)
                     setAlertMessage(res?.Message || "เกิดข้อผิดพลาดในการสร้าง customer address");
                     setError(true);
                 }
@@ -91,15 +78,12 @@ export default function CustomerUpdate({ params: { slug } }: { params: { slug: s
             }
 
         } catch (error) {
-            console.log(error)
             setAlertMessage("เกิดข้อผิดพลาดดึงข้อมูล Customer Address");
             setError(true);
         }
     }
 
     React.useEffect(() => {
-        console.log("slug");
-        console.log(slug);
         getCustomerGroup();
         getCustomer(slug);
         getCustomerAddress();
@@ -110,7 +94,6 @@ export default function CustomerUpdate({ params: { slug } }: { params: { slug: s
     const [error, setError] = React.useState(false);
     const [message, setAlertMessage] = React.useState("");
     const submit = async () => {
-        console.log(customer)
         try {
             customer.CustomerGroupId = convertType(customer.CustomerGroupId)
             let res = await UpdateCustomer(customer)
@@ -128,7 +111,6 @@ export default function CustomerUpdate({ params: { slug } }: { params: { slug: s
 
 
         } catch (error) {
-            console.error("Error submitting customer data:", error);
             setAlertMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
             setError(true);
         }
@@ -184,11 +166,6 @@ export default function CustomerUpdate({ params: { slug } }: { params: { slug: s
 
     const handleDelete = async () => { // when click submit
         let res = await DeleteCustomerAddressById(deleteID)
-        if (res) {
-            console.log(res.data)
-        } else {
-            console.log(res.data)
-        }
         getCustomerAddress();
         setOpenDelete(false)
 
@@ -263,7 +240,7 @@ export default function CustomerUpdate({ params: { slug } }: { params: { slug: s
     }
 
     return (
-        <Layout>
+        <Box height="100vh">
             <ThemeProvider theme={theme} >
 
                 <div
@@ -705,7 +682,7 @@ export default function CustomerUpdate({ params: { slug } }: { params: { slug: s
                 </TabContext>
 
             </ThemeProvider>
-        </Layout>
+        </Box>
 
     );
 }

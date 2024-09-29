@@ -23,7 +23,6 @@ export const Login = (props: LoginModalProps) => {
     const [password, setPassword] =useState<string>("");
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
-    console.log()
     const handleInputChangeEmail = (
         event: React.ChangeEvent<{ id?: string; value: any }>
     ) => {
@@ -48,16 +47,6 @@ export const Login = (props: LoginModalProps) => {
         setSuccess(false);
         setError(false);
     };
-
-    // const submit = async () => {
-    //     console.log(signin.email)
-    //     console.log(signin.password)
-    //     if (signin.email != null && signin.password != null) {
-    //         console.log("logging in")
-    //         userContext?.handleLogin(signin.email, signin.password)
-
-    //     }
-    // };
     return (
 
         <Grid container component="main" sx={{ height: '100vh' }}>

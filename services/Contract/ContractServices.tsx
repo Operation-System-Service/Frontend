@@ -19,7 +19,6 @@ export async function CreateContract(contract: Partial<ContractCreateInterface>)
             return false;
         }
     } catch (error) {
-        console.error("Error creating contract:", error);
         return false;
     }
 }
@@ -40,7 +39,6 @@ export async function CreateDevice(device: Partial<CreateDeviceInterface>) {
             return false;
         }
     } catch (error) {
-        console.error("Error creating contract:", error);
         return false;
     }
 }
@@ -61,7 +59,6 @@ export async function CreateSoftware(sf: Partial<CreateSoftwareInterface>) {
             return false;
         }
     } catch (error) {
-        console.error("Error creating software:", error);
         return false;
     }
 }
@@ -82,7 +79,6 @@ export async function CreateDeviceConfigBackup(cf: Partial<CreateDeviceConfigBac
             return false;
         }
     } catch (error) {
-        console.error("Error creating config backup:", error);
         return false;
     }
 }
@@ -103,7 +99,6 @@ export async function UpdateDeviceConfigBackup(cf: Partial<DeviceConfigBackupInt
             return false;
         }
     } catch (error) {
-        console.error("Error creating config backup:", error);
         return false;
     }
 }
@@ -124,7 +119,6 @@ export async function CreateSoftwareConfigBackup(cf: Partial<CreateSoftwareConfi
             return false;
         }
     } catch (error) {
-        console.error("Error creating config backup:", error);
         return false;
     }
 }
@@ -145,7 +139,6 @@ export async function UpdateSoftwareConfigBackup(cf: Partial<SoftwareConfigBacku
             return false;
         }
     } catch (error) {
-        console.error("Error creating config backup:", error);
         return false;
     }
 }
@@ -166,7 +159,6 @@ export async function UpdateDevice(device: Partial<CreateDeviceInterface>) {
             return false;
         }
     } catch (error) {
-        console.error("Error creating contract:", error);
         return false;
     }
 }
@@ -187,7 +179,6 @@ export async function UpdateSoftware(device: Partial<CreateSoftwareInterface>) {
             return false;
         }
     } catch (error) {
-        console.error("Error creating software:", error);
         return false;
     }
 }
@@ -335,7 +326,6 @@ export async function UpdateContract(contract: Partial<ContractUpdateInterface>)
             return false;
         }
     } catch (error) {
-        console.error("Error creating customer:", error);
         return false;
     }
 }

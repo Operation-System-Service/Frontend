@@ -107,7 +107,6 @@ export async function CreateCustomer(customer: Partial<CustomerCreateInterface>)
             return false;
         }
     } catch (error) {
-        console.error("Error creating customer:", error);
         return false;
     }
 }
@@ -129,7 +128,6 @@ export async function UpdateCustomer(customer: Partial<CustomerInterface>) {
             return false;
         }
     } catch (error) {
-        console.error("Error creating customer:", error);
         return false;
     }
 }
@@ -224,7 +222,6 @@ export async function CreateCustomerAddress(customer: Partial<CreateCustomerAddr
             return false;
         }
     } catch (error) {
-        console.error("Error creating customer:", error);
         return false;
     }
 }
@@ -246,7 +243,6 @@ export async function UpdateCustomerAddress(customer: Partial<CustomerAddressInt
             return false;
         }
     } catch (error) {
-        console.error("Error creating customer:", error);
         return false;
     }
 }
@@ -339,7 +335,6 @@ export async function CreateCustomerGroup(customer: Partial<CreateCustomerGroupI
             return false;
         }
     } catch (error) {
-        console.error("Error creating customer:", error);
         return false;
     }
 }
@@ -361,7 +356,6 @@ export async function UpdateCustomerGroup(customer: Partial<CustomerGroupInterfa
             return false;
         }
     } catch (error) {
-        console.error("Error creating customer:", error);
         return false;
     }
 }

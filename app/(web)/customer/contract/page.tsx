@@ -2,9 +2,6 @@
 import { Button, CardHeader, Divider, Grid, TextField, CardContent, Container, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, ThemeProvider, createTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import Layout from "../../layout";
-import { CustomerInterface } from "@/interfaces/ICustomer";
-
 import React from "react";
 
 import themeOptions from "@/@core/theme/themeOptions";
@@ -22,15 +19,6 @@ const useStyles = makeStyles({
     },
     appBar: {
         zIndex: 1200,
-    },
-    drawer: {
-        width: 120,
-        flexShrink: 0,
-    },
-    drawerPaper: {
-        width: 240,
-        background:
-            "linear-gradient(0deg, rgba(3,8,20,1) 60%, rgba(8,18,50,255) 100%)",
     },
     toolbar: {
         minHeight: 64,
@@ -69,14 +57,10 @@ const Contract = ({ children }: any) => {
         let res = await ListContracts();
         if (res) {
             setContract(res)
-            console.log(res)
-            console.log(contract)
         }
     }
     React.useEffect(() => {
         getContract();
-        // console.log(contract)
-
     }, [])
     //For Delete state 
     const [deleteID, setDeleteID] = React.useState<string>("")
@@ -86,11 +70,6 @@ const Contract = ({ children }: any) => {
 
     const handleDelete = async () => { // when click submit
         let res = await DeleteCustomerById(deleteID)
-        if (res) {
-            console.log(res.data)
-        } else {
-            console.log(res.data)
-        }
         getContract();
         setOpenDelete(false)
 
@@ -110,12 +89,8 @@ const Contract = ({ children }: any) => {
         } else {
             let res = await GetSearchCustomer(searchValue)
             if (res) {
-                console.log(res)
                 setContract(res);
-            } else {
-                console.log(res)
-            }
-
+            } 
         }
 
     }
@@ -140,7 +115,7 @@ const Contract = ({ children }: any) => {
 
     return (
 
-        <Layout >
+        <Box style={{ backgroundColor: "#f8f9fa", width: "100%" }} height="100vh">
             <div
                 style={{
                     backgroundColor: "#f8f9fa",
@@ -152,7 +127,7 @@ const Contract = ({ children }: any) => {
 
                 <div
                     className="justify-between w-full"
-                    style={{ backgroundColor: "#f8f9fa", width: "130%" }}
+                    style={{ backgroundColor: "#f8f9fa", width: "100%" }}
                 >
 
                     <CardHeader
@@ -168,8 +143,8 @@ const Contract = ({ children }: any) => {
                     ></CardHeader>
                 </div>
                 <CardContent sx={{ p: 0, px: 0, py: 0, flexGrow: 0 }}>
-                    <div >
-                        <div style={{ backgroundColor: "#f8f9fa", width: "130%" }}>
+                    <div style={{ overflowX: 'auto' }}>
+                        <div style={{ backgroundColor: "#f8f9fa", width: "100%" }}>
                             <Grid container spacing={1} >
                                 <Grid item xs={3} className="flex justify-center flex-col-reverse">
                                     <TextField
@@ -212,246 +187,248 @@ const Contract = ({ children }: any) => {
                                 </Grid>
                             </Grid>
                         </div>
-                        <div style={{ height: 800, minHeight: "100%", width: "130%", backgroundColor: "#f8f9fa" }} >
-                            <TableContainer  >
-                                <Table aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell align="center" width="10%"> Company Name </TableCell>
-                                            <TableCell align="center" width="10%"> ProjectName </TableCell> {/* Adjusted width */}
-                                            <TableCell align="center" width="5%"> ContractStart </TableCell>
-                                            <TableCell align="center" width="5%"> ContractStop </TableCell> {/* Adjusted width */}
-                                            <TableCell align="center" width="5%"> VendorPO </TableCell>
-                                            <TableCell align="center" width="5%"> CustomerPO </TableCell> {/* Adjusted width */}
-                                            <TableCell align="center" width="5%"> IncidentPerYear </TableCell>
-                                            <TableCell align="center" width="5%"> OverAll Incident Per Year </TableCell>
-                                            <TableCell align="center" width="5%"> IncidentPerContract </TableCell>
-                                            <TableCell align="center" width="5%"> OverAll Incident Per Contract </TableCell>
-                                            <TableCell align="center" width="5%"> SLA </TableCell>
-                                            <TableCell align="center" width="5%"> View </TableCell>
-                                            <TableCell align="center" width="5%"> Appliance </TableCell>
-                                            <TableCell align="center" width="5%"> Config Backup </TableCell>
-                                            <TableCell align="center" width="5%"> Ticket </TableCell>
-                                            <TableCell align="center" width="5%"> Delete </TableCell>
+                        <div style={{ height: 800, width: "100%", backgroundColor: "#f8f9fa" }}>
+                            <div style={{ overflowX: 'auto' }}>
+                                <TableContainer  >
+                                    <Table aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="center" style={{ minWidth: '200px' }}> Company Name </TableCell>
+                                                <TableCell align="center" width="10%"> ProjectName </TableCell> {/* Adjusted width */}
+                                                <TableCell align="center" width="5%"> ContractStart </TableCell>
+                                                <TableCell align="center" width="5%"> ContractStop </TableCell> {/* Adjusted width */}
+                                                <TableCell align="center" width="5%"> VendorPO </TableCell>
+                                                <TableCell align="center" width="5%"> CustomerPO </TableCell> {/* Adjusted width */}
+                                                <TableCell align="center" width="5%"> IncidentPerYear </TableCell>
+                                                <TableCell align="center" style={{ minWidth: '150px' }} width="5%"> OverAll Incident Per Year </TableCell>
+                                                <TableCell align="center" width="5%"> IncidentPerContract </TableCell>
+                                                <TableCell align="center" style={{ minWidth: '150px' }} width="5%"> OverAll Incident Per Contract </TableCell>
+                                                <TableCell align="center" width="5%"> SLA </TableCell>
+                                                <TableCell align="center" width="5%"> View </TableCell>
+                                                <TableCell align="center" width="5%"> Appliance </TableCell>
+                                                <TableCell align="center" width="5%"> Config Backup </TableCell>
+                                                <TableCell align="center" width="5%"> Ticket </TableCell>
+                                                <TableCell align="center" width="5%"> Delete </TableCell>
 
-                                        </TableRow>
-                                    </TableHead>
-
-                                    <TableBody>
-                                        {contract.map((item: ContractInterface) => (
-                                            <TableRow
-                                                key={item.Id}
-                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-
-                                            >
-
-
-                                                <TableCell align="left">{item.Customer?.CompanyName || "-"}</TableCell>
-                                                <TableCell align="center">{item.ProjectName}</TableCell>
-                                                <TableCell align="center">{convertDateFormat(item.ContractStart!) || "-"}</TableCell>
-                                                <TableCell align="center">{convertDateFormat(item.ContractStop!) || "-"}</TableCell>
-                                                <TableCell align="center">{item.VendorPO || "-"}</TableCell>
-                                                <TableCell align="center">{item.CustomerPO || "-"}</TableCell>
-                                                <TableCell align="center">{item.IncidentPerYear || "-"}</TableCell>
-                                                <TableCell align="center">
-                                                    <span
-                                                        className={
-                                                            item.IncidentPerYear! > 0 &&
-                                                                item.OverAllIncidentPerYear! / item.IncidentPerYear! >= 0.8
-                                                                ? 'ellipsis-wrapper'
-                                                                : ''
-                                                        }
-                                                        style={{
-                                                            borderColor:
-                                                                item.IncidentPerYear! > 0 &&
-                                                                    item.OverAllIncidentPerYear! / item.IncidentPerYear! >= 0.8
-                                                                    ? "White"
-                                                                    : 'transparent', // Border color
-                                                            backgroundColor:
-                                                                item.IncidentPerYear! > 0 &&
-                                                                    item.OverAllIncidentPerYear! / item.IncidentPerYear! >= 0.8
-                                                                    ? "#F8F988"
-                                                                    : 'transparent',
-                                                            // color: item.IncidentPerYear! > 0 &&
-                                                            //     item.OverAllIncidentPerYear! / item.IncidentPerYear! >= 0.8
-                                                            //     ? "white"
-                                                            //     : 'inherit',
-                                                            display: 'inline-block',
-                                                            maxWidth: '150px', // Adjust max-width to control the width of the background
-                                                            overflow: 'hidden',
-                                                            textOverflow: 'ellipsis',
-                                                            whiteSpace: 'nowrap',
-                                                            padding: '4px 30px', // Padding to add space around the text
-                                                            border: '1px solid black', // Border color and width
-                                                            borderRadius: '5px', // Optional: rounded corners
-                                                        }}
-                                                    >
-                                                        {item.OverAllIncidentPerYear || "0"}
-                                                    </span>
-                                                </TableCell>
-                                                <TableCell align="center">{item.IncidentPerContract || "-"}</TableCell>
-                                                <TableCell align="center">
-                                                    <span
-                                                        className={
-                                                            item.IncidentPerContract! > 0 &&
-                                                                item.OverAllIncident! / item.IncidentPerContract! >= 0.8
-                                                                ? 'ellipsis-wrapper'
-                                                                : ''
-                                                        }
-                                                        style={{
-                                                            borderColor:
-                                                                item.IncidentPerContract! > 0 &&
-                                                                    item.OverAllIncident! / item.IncidentPerContract! >= 0.8
-                                                                    ? "White"
-                                                                    : 'transparent', // Border color
-                                                            backgroundColor:
-                                                                item.IncidentPerContract! > 0 &&
-                                                                    item.OverAllIncident! / item.IncidentPerContract! >= 0.8
-                                                                    ? "#F8F988"
-                                                                    : 'transparent',
-
-                                                            display: 'inline-block',
-                                                            maxWidth: '150px', // Adjust max-width to control the width of the background
-                                                            overflow: 'hidden',
-                                                            textOverflow: 'ellipsis',
-                                                            whiteSpace: 'nowrap',
-                                                            padding: '4px 30px', // Padding to add space around the text
-                                                            border: '1px solid black', // Border color and width
-                                                            borderRadius: '5px', // Optional: rounded corners
-                                                        }}
-                                                    >
-                                                        {item.OverAllIncident || "0"}
-                                                    </span>
-                                                </TableCell>
-                                                <TableCell align="center">{item.Sla?.Response || "-"}</TableCell>
-                                                <TableCell>
-                                                    {
-                                                        <Link href={"/customer/contract/update/" + item.Id}>
-                                                            <Button
-                                                                variant='outlined'
-                                                                color='warning'
-                                                                sx={{
-                                                                    maxWidth: 60, // Set the maximum width of the button
-                                                                    maxHeight: 60, // Set the maximum height of the button
-                                                                }}
-                                                            >
-                                                                view
-                                                            </Button>
-                                                        </Link>
-
-                                                    }
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    {
-                                                        <Link href={"/customer/contract/device/" + item.Id}>
-                                                            <Button
-                                                                variant='outlined'
-                                                                color='primary'
-                                                                sx={{
-                                                                    maxWidth: 60, // Set the maximum width of the button
-                                                                    maxHeight: 60, // Set the maximum height of the button
-                                                                }}
-                                                            >
-                                                                device
-                                                            </Button>
-                                                        </Link>
-
-                                                    }
-                                                </TableCell>
-                                                <TableCell>
-                                                    {
-                                                        <Link href={"/customer/contract/config/" + item.Id}>
-                                                            <Button
-                                                                variant='outlined'
-                                                                color="error"
-                                                                sx={{
-                                                                    maxWidth: 60, // Set the maximum width of the button
-                                                                    maxHeight: 60, // Set the maximum height of the button
-                                                                }}
-                                                            >
-                                                                config
-                                                            </Button>
-                                                        </Link>
-
-                                                    }
-                                                </TableCell>
-                                                <TableCell>
-                                                    {
-                                                        <Link href={"/customer/contract/ticket/create/" + item.Id}>
-                                                            <Button
-                                                                variant='outlined'
-                                                                color='info'
-                                                                sx={{
-                                                                    maxWidth: 60, // Set the maximum width of the button
-                                                                    maxHeight: 60, // Set the maximum height of the button
-                                                                }}
-                                                            >
-                                                                ticket
-                                                            </Button>
-                                                        </Link>
-
-                                                    }
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    {
-
-                                                        <Button
-                                                            variant='outlined'
-                                                            color='error'
-                                                            onClick={() => { handleDialogDeleteOpen(item.Id) }}
-                                                            sx={{
-                                                                maxWidth: 60, // Set the maximum width of the button
-                                                                maxHeight: 60, // Set the maximum height of the button
-                                                            }}
-
-                                                        >
-                                                            Delete
-                                                        </Button>
-                                                    }
-
-                                                </TableCell>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            <Box>
-                            </Box>
-                            <Dialog
-                                open={openDelete}
-                                onClose={handleDialogDeleteclose}
-                                aria-labelledby="alert-dialog-title"
-                                aria-describedby="alert-dialog-description"
-                                PaperProps={{
-                                    style: {
-                                        backgroundColor: "#f8f9fa",
-                                    },
-                                }}
-                            >
-                                <DialogTitle id="alert-dialog-title">
-                                    {`คุณต้องการลบสัญญษโปรเจค ${contract.filter((emp) => (emp.Id === deleteID)).at(0)?.ProjectName} จริงหรือไม่`}
-                                </DialogTitle>
-                                <DialogContent>
-                                    <DialogContentText id="alert-dialog-description">
-                                        หากคุณลบข้อมูลนี้แล้วนั้น คุณจะไม่สามารถกู้คืนได้อีก คุณต้องการลบข้อมูลนี้ใช่หรือไม่
-                                    </DialogContentText>
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={handleDialogDeleteclose}>ยกเลิก</Button>
-                                    <Button onClick={handleDelete} className="bg-red" autoFocus>
-                                        ยืนยัน
-                                    </Button>
-                                </DialogActions>
+                                        </TableHead>
 
-                            </Dialog>
+                                        <TableBody>
+                                            {contract.map((item: ContractInterface) => (
+                                                <TableRow
+                                                    key={item.Id}
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+
+                                                >
+
+
+                                                    <TableCell align="left">{item.Customer?.CompanyName || "-"}</TableCell>
+                                                    <TableCell align="center">{item.ProjectName}</TableCell>
+                                                    <TableCell align="center">{convertDateFormat(item.ContractStart!) || "-"}</TableCell>
+                                                    <TableCell align="center">{convertDateFormat(item.ContractStop!) || "-"}</TableCell>
+                                                    <TableCell align="center">{item.VendorPO || "-"}</TableCell>
+                                                    <TableCell align="center">{item.CustomerPO || "-"}</TableCell>
+                                                    <TableCell align="center">{item.IncidentPerYear || "-"}</TableCell>
+                                                    <TableCell align="center">
+                                                        <span
+                                                            className={
+                                                                item.IncidentPerYear! > 0 &&
+                                                                    item.OverAllIncidentPerYear! / item.IncidentPerYear! >= 0.8
+                                                                    ? 'ellipsis-wrapper'
+                                                                    : ''
+                                                            }
+                                                            style={{
+                                                                borderColor:
+                                                                    item.IncidentPerYear! > 0 &&
+                                                                        item.OverAllIncidentPerYear! / item.IncidentPerYear! >= 0.8
+                                                                        ? "White"
+                                                                        : 'transparent', // Border color
+                                                                backgroundColor:
+                                                                    item.IncidentPerYear! > 0 &&
+                                                                        item.OverAllIncidentPerYear! / item.IncidentPerYear! >= 0.8
+                                                                        ? "#F8F988"
+                                                                        : 'transparent',
+                                                                // color: item.IncidentPerYear! > 0 &&
+                                                                //     item.OverAllIncidentPerYear! / item.IncidentPerYear! >= 0.8
+                                                                //     ? "white"
+                                                                //     : 'inherit',
+                                                                display: 'inline-block',
+                                                                maxWidth: '150px', // Adjust max-width to control the width of the background
+                                                                overflow: 'hidden',
+                                                                textOverflow: 'ellipsis',
+                                                                whiteSpace: 'nowrap',
+                                                                padding: '4px 30px', // Padding to add space around the text
+                                                                border: '1px solid black', // Border color and width
+                                                                borderRadius: '5px', // Optional: rounded corners
+                                                            }}
+                                                        >
+                                                            {item.OverAllIncidentPerYear || "0"}
+                                                        </span>
+                                                    </TableCell>
+                                                    <TableCell align="center">{item.IncidentPerContract || "-"}</TableCell>
+                                                    <TableCell align="center">
+                                                        <span
+                                                            className={
+                                                                item.IncidentPerContract! > 0 &&
+                                                                    item.OverAllIncident! / item.IncidentPerContract! >= 0.8
+                                                                    ? 'ellipsis-wrapper'
+                                                                    : ''
+                                                            }
+                                                            style={{
+                                                                borderColor:
+                                                                    item.IncidentPerContract! > 0 &&
+                                                                        item.OverAllIncident! / item.IncidentPerContract! >= 0.8
+                                                                        ? "White"
+                                                                        : 'transparent', // Border color
+                                                                backgroundColor:
+                                                                    item.IncidentPerContract! > 0 &&
+                                                                        item.OverAllIncident! / item.IncidentPerContract! >= 0.8
+                                                                        ? "#F8F988"
+                                                                        : 'transparent',
+
+                                                                display: 'inline-block',
+                                                                maxWidth: '150px', // Adjust max-width to control the width of the background
+                                                                overflow: 'hidden',
+                                                                textOverflow: 'ellipsis',
+                                                                whiteSpace: 'nowrap',
+                                                                padding: '4px 30px', // Padding to add space around the text
+                                                                border: '1px solid black', // Border color and width
+                                                                borderRadius: '5px', // Optional: rounded corners
+                                                            }}
+                                                        >
+                                                            {item.OverAllIncident || "0"}
+                                                        </span>
+                                                    </TableCell>
+                                                    <TableCell align="center">{item.Sla?.Response || "-"}</TableCell>
+                                                    <TableCell>
+                                                        {
+                                                            <Link href={"/customer/contract/update/" + item.Id}>
+                                                                <Button
+                                                                    variant='outlined'
+                                                                    color='warning'
+                                                                    sx={{
+                                                                        maxWidth: 60, // Set the maximum width of the button
+                                                                        maxHeight: 60, // Set the maximum height of the button
+                                                                    }}
+                                                                >
+                                                                    view
+                                                                </Button>
+                                                            </Link>
+
+                                                        }
+                                                    </TableCell>
+
+                                                    <TableCell>
+                                                        {
+                                                            <Link href={"/customer/contract/device/" + item.Id}>
+                                                                <Button
+                                                                    variant='outlined'
+                                                                    color='primary'
+                                                                    sx={{
+                                                                        maxWidth: 60, // Set the maximum width of the button
+                                                                        maxHeight: 60, // Set the maximum height of the button
+                                                                    }}
+                                                                >
+                                                                    device
+                                                                </Button>
+                                                            </Link>
+
+                                                        }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {
+                                                            <Link href={"/customer/contract/config/" + item.Id}>
+                                                                <Button
+                                                                    variant='outlined'
+                                                                    color="error"
+                                                                    sx={{
+                                                                        maxWidth: 60, // Set the maximum width of the button
+                                                                        maxHeight: 60, // Set the maximum height of the button
+                                                                    }}
+                                                                >
+                                                                    config
+                                                                </Button>
+                                                            </Link>
+
+                                                        }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {
+                                                            <Link href={"/customer/contract/ticket/create/" + item.Id}>
+                                                                <Button
+                                                                    variant='outlined'
+                                                                    color='info'
+                                                                    sx={{
+                                                                        maxWidth: 60, // Set the maximum width of the button
+                                                                        maxHeight: 60, // Set the maximum height of the button
+                                                                    }}
+                                                                >
+                                                                    ticket
+                                                                </Button>
+                                                            </Link>
+
+                                                        }
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        {
+
+                                                            <Button
+                                                                variant='outlined'
+                                                                color='error'
+                                                                onClick={() => { handleDialogDeleteOpen(item.Id) }}
+                                                                sx={{
+                                                                    maxWidth: 60, // Set the maximum width of the button
+                                                                    maxHeight: 60, // Set the maximum height of the button
+                                                                }}
+
+                                                            >
+                                                                Delete
+                                                            </Button>
+                                                        }
+
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                <Box>
+                                </Box>
+                                <Dialog
+                                    open={openDelete}
+                                    onClose={handleDialogDeleteclose}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                    PaperProps={{
+                                        style: {
+                                            backgroundColor: "#f8f9fa",
+                                        },
+                                    }}
+                                >
+                                    <DialogTitle id="alert-dialog-title">
+                                        {`คุณต้องการลบสัญญษโปรเจค ${contract.filter((emp) => (emp.Id === deleteID)).at(0)?.ProjectName} จริงหรือไม่`}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText id="alert-dialog-description">
+                                            หากคุณลบข้อมูลนี้แล้วนั้น คุณจะไม่สามารถกู้คืนได้อีก คุณต้องการลบข้อมูลนี้ใช่หรือไม่
+                                        </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleDialogDeleteclose}>ยกเลิก</Button>
+                                        <Button onClick={handleDelete} className="bg-red" autoFocus>
+                                            ยืนยัน
+                                        </Button>
+                                    </DialogActions>
+
+                                </Dialog>
+                            </div>
                         </div>
 
                     </div>
                 </CardContent>
             </div>
 
-        </Layout>
+        </Box>
     )
 
 }

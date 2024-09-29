@@ -2,7 +2,7 @@
 const nextConfig = {
   async rewrites() {
     const apiBase = process.env.NEXT_PUBLIC_API;
-    console.log("API Base URL:", apiBase); // Add this line for debugging
+    // console.log("API Base URL:", apiBase); // Add this line for debugging
 
     return [
       {

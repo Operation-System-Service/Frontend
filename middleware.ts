@@ -12,9 +12,6 @@ import { UserDataType } from '@/contexts/types';
 // import { UserDataType } from './contexts/types';
 
 export function middleware(request: NextRequest) {
-    // const storage = Storage.getInstance()
-    // const expString = storage.getExpire()
-    // console.log(expString)
     const token = request.cookies.get('token'); // Assuming the token is stored in cookies
     if (!token) {
         // Token not present, redirect to home or login page
@@ -27,8 +24,7 @@ export function middleware(request: NextRequest) {
     // const exp = token.value * 1000; // Convert to milliseconds
     // Check if token has expired
     const currentTime = Date.now();
-    // console.log("currentTime: ", currentTime)
-    // console.log("userInfo.exp: ", userInfo.exp*1000)
+
 
     if (userInfo.exp*1000 <= currentTime) {
         // Token has expired, redirect to home

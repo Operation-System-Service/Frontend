@@ -1,6 +1,5 @@
 "use client"
 
-import Layout from "@/app/(web)/layout"
 import { ContractInterface } from "@/interfaces/IContract"
 import { CreateOperationServiceInterface } from "@/interfaces/IOperationService"
 import { PriorityInterface } from "@/interfaces/IPriority"
@@ -50,7 +49,6 @@ export default function OperationTicket({ params: { slug } }: { params: { slug: 
     const getContract = async (id: string | undefined) => {
         let res = await getContractByID(id)
         if (res && res.Status !== "error") {
-            console.log(res)
             setContract(res)
             getCustomerAddress(res.CustomerID)
         }
@@ -62,12 +60,11 @@ export default function OperationTicket({ params: { slug } }: { params: { slug: 
             if (res && res.Status !== "error") {
                 setCustomerAddress(res)
             } else {
-                console.log(res)
+                
                 setAlertMessage(res?.Message || "เกิดข้อผิดพลาดดึงข้อมูล Customer Address");
                 setError(true);
             }
         } catch (error) {
-            console.log(error)
             setAlertMessage("เกิดข้อผิดพลาดดึงข้อมูล Customer Address");
             setError(true);
         }
@@ -76,14 +73,12 @@ export default function OperationTicket({ params: { slug } }: { params: { slug: 
     const getEmployee = async () => {
         let res = await ListEmployees();
         if (res && res.Status !== "error") {
-            console.log(res)
             setEmployee(res)
         }
     }
 
     const getPriority = async () => {
         let res = await ListPriorities();
-        console.log(res);
         if (res) {
             setPriority(res);
         }
@@ -91,7 +86,6 @@ export default function OperationTicket({ params: { slug } }: { params: { slug: 
 
     const getDivision = async () => {
         let res = await ListDevisions();
-        console.log(res);
         if (res) {
             setDivisions(res);
         }
@@ -99,7 +93,6 @@ export default function OperationTicket({ params: { slug } }: { params: { slug: 
 
     const getOperationType = async () => {
         let res = await ListOperationTypes();
-        console.log(res);
         if (res) {
             setOperationType(res);
         }
@@ -107,7 +100,6 @@ export default function OperationTicket({ params: { slug } }: { params: { slug: 
 
     const getStatus = async () => {
         let res = await ListStatus();
-        console.log(res);
         if (res) {
             setStatus(res);
         }
@@ -117,7 +109,7 @@ export default function OperationTicket({ params: { slug } }: { params: { slug: 
             getEmployee()
         } else {
             let res = await ListEmployeeByDivision(id);
-            console.log(res);
+            
             if (res) {
                 setEmployee(res);
             }
@@ -147,7 +139,6 @@ export default function OperationTicket({ params: { slug } }: { params: { slug: 
         return val;
     };
     const submit = async () => {
-        console.log(operation)
         try {
             operation.DateOfVisit = dateOfVisit.format("YYYY-MM-DD").toString()
             operation.ContractID = slug
@@ -171,7 +162,6 @@ export default function OperationTicket({ params: { slug } }: { params: { slug: 
 
 
         } catch (error) {
-            console.error("Error submitting contract data:", error);
             setAlertMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
             setError(true);
         }
@@ -269,7 +259,8 @@ export default function OperationTicket({ params: { slug } }: { params: { slug: 
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Layout>
+            <Container maxWidth="xl" style={{ backgroundColor: "#f8f9fa" }}>
+            
                 <ThemeProvider theme={theme}>
                     <div
                         className="flex flex-row justify-between w-full"
@@ -708,7 +699,7 @@ export default function OperationTicket({ params: { slug } }: { params: { slug: 
                         </div>
                     </Container>
                 </ThemeProvider>
-            </Layout>
+            </Container>
         </LocalizationProvider>
     );
 

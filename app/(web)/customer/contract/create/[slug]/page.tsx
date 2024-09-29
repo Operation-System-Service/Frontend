@@ -6,7 +6,6 @@ import React from 'react'
 
 import { CustomerInterface } from '@/interfaces/ICustomer'
 import { GetCustomerByID } from '@/services/Customer/CustomerServices'
-import Layout from '@/app/(web)/layout'
 import { SlaInterface, SlaTypeInterface } from '@/interfaces/ISla'
 import { ServiceCatalogInterface } from '@/interfaces/IServiceCatalog'
 import { ListServiceCatalogs } from '@/services/ServiceCatalog/ServiceCatalogServices'
@@ -17,6 +16,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { CreateContract } from '@/services/Contract/ContractServices'
+import { Box } from '@mui/system'
 
 export default function ContractCreate({ params: { slug } }: { params: { slug: string } }) {
     // List all Database
@@ -37,33 +37,26 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
     const getCustomer = async (id: string | undefined) => {
         let res = await GetCustomerByID(id)
         if (res && res.Status !== "error") {
-            console.log(res)
             setCustomer(res)
-            console.log("customer")
-            console.log(customer)
         }
     }
 
     const getServiceCatalog = async () => {
-
         let res = await ListServiceCatalogs();
-        console.log(res);
         if (res) {
             setServiceCatalog(res);
         }
     }
     // get Role
     const getSlaByType = async (id: number) => {
-        if(slaTypeNumber==0){
+        if (slaTypeNumber == 0) {
             let res = await ListSlas();
-            console.log(res);
             if (res) {
                 setSla(res);
             }
 
-        }else{
+        } else {
             let res = await ListSlasByType(id);
-            console.log(res);
             if (res) {
                 setSla(res);
             }
@@ -71,14 +64,11 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
     }
     const getSlaType = async () => {
         let res = await ListSlaTypes();
-        console.log(res);
         if (res) {
             setSlaType(res);
         }
     }
     React.useEffect(() => {
-        // console.log("slug");
-        // console.log(slug);
         getCustomer(slug);
         getServiceCatalog();
         getSlaType();
@@ -100,7 +90,6 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
         return val;
     };
     const submit = async () => {
-        console.log(customer)
         try {
             contract.ContractStart = contractStart.format("YYYY-MM-DD").toString()
             contract.ContractStop = contractStop.format("YYYY-MM-DD").toString()
@@ -131,14 +120,7 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
                 setAlertMessage(res?.Message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
                 setError(true);
             }
-
-            // setTimeout(() => {
-            //     router.push("/contract")
-            // }, 3000)
-
-
         } catch (error) {
-            console.error("Error submitting contract data:", error);
             setAlertMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
             setError(true);
         }
@@ -204,7 +186,8 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Layout>
+            <Box height="100vh">
+
                 <ThemeProvider theme={theme}>
                     <div
                         className="flex flex-row justify-between w-full"
@@ -223,10 +206,10 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
                             title={`Create Customer Contract`}
                         ></CardHeader>
                     </div>
-                    <Container maxWidth="lg">
+                    <Box >
 
 
-                    <div className="flex flex-col h-screen">
+                        <div className="flex flex-col ">
                             <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
                                 <Grid item xs={5}>
                                     <FormControl fullWidth variant="outlined">
@@ -413,9 +396,9 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
                                             native
                                             value={slaTypeNumber ?? 1}
                                             onChange={handleInputChangeSlaType}
-                                            // inputProps={{
-                                            //     name: "SlaID",
-                                            // }}
+                                        // inputProps={{
+                                        //     name: "SlaID",
+                                        // }}
                                         >
                                             <option value={0} key={0}>
                                                 กรุณา เลือกชนิดของ sla type
@@ -500,9 +483,9 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
                                 </Grid>
                             </Grid>
                         </div>
-                    </Container>
+                    </Box>
                 </ThemeProvider>
-            </Layout>
+            </Box>
         </LocalizationProvider>
     );
 }

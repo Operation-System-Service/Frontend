@@ -74,7 +74,6 @@ export async function CreateEmployee(employee: Partial<EmployeeCreateInterface>)
             return false;
         }
     } catch (error) {
-        console.error("Error creating employee:", error);
         return false;
     }
 }
@@ -126,7 +125,6 @@ export async function UpdateEmployee(employee: Partial<EmployeeUpdateInterface>)
             return false;
         }
     } catch (error) {
-        console.error("Error creating employee:", error);
         return false;
     }
 }
