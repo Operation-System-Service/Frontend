@@ -8,6 +8,7 @@ import { Button, CssBaseline, Grid } from "@mui/material";
 import React, { useState } from "react";
 import { useAuthens } from "@/contexts/useAuthen";
 import MicrosoftIcon from '@mui/icons-material/Microsoft';
+import aboutUs from "../public/images/aboutUs.jpg"
 
 
 
@@ -39,7 +40,8 @@ const LoginPage = () => {
           sm={4}
           md={6}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+            height: '100vh', // Set height
+            backgroundImage: `url('/images/aboutUs.jpg')`,
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
