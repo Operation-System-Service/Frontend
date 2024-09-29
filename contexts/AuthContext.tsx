@@ -33,7 +33,7 @@ const AuthContext = createContext(defaultProvider)
 type Props = {
 	children: ReactNode
 }
-const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
+const secretKey = new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_SECRET);
 
 const AuthProvider = ({ children }: Props) => {
 
@@ -63,6 +63,8 @@ const AuthProvider = ({ children }: Props) => {
 				const res = await apiUserLogin(idToken);
 				if (res) {
 					window.localStorage.setItem('at', JSON.stringify(res).slice(1, -1));
+					console.log("process.env.JWT_SECRET: ",process.env.JWT_SECRET)
+					console.log("JWT_SECRET: ",secretKey)
 					// Verify the JWT with the secret key and extract the payload
 					const { payload } = await jwtVerify(JSON.stringify(res).slice(1, -1), secretKey);
 
