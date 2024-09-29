@@ -3,6 +3,7 @@ import { Alert, Button, FormControl, Snackbar, TextField, createTheme, OutlinedI
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import React from 'react'
+import { useAuthens } from '@/contexts/useAuthen'
 
 import { useRouter } from 'next/navigation'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -20,7 +21,7 @@ import { Box } from '@mui/system'
 
 export default function ContractUpdate({ params: { slug } }: { params: { slug: string } }) {
 
-    let router = useRouter()
+    const { user } = useAuthens()
     const [sla, setSla] = React.useState<SlaInterface[]>([])
     const [service_catalog, setServiceCatalog] = React.useState<ServiceCatalogInterface[]>([])
     const [contract, setContract] = React.useState<Partial<ContractUpdateInterface>>({
@@ -86,6 +87,10 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
         getContract(slug)
         getServiceCatalog();
         getSlaType();
+        if (typeof window !== 'undefined') {
+            const storedRoleName = window.localStorage.getItem('roleName');
+            setRoleName(storedRoleName);
+          }
     }, []);
     React.useEffect(() => {
         getSlaByType(slaTypeNumber);
@@ -93,6 +98,7 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
     const handleInputChangeSlaType = (event: SelectChangeEvent<number>) => {
         setSlaTypeNumber(Number(event.target.value)); // Ensure value is converted to a number
     };
+    const [roleName, setRoleName] = React.useState<string | null>(null);
 
     // submit
     const [success, setSuccess] = React.useState(false);
@@ -264,7 +270,7 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
                                             variant="outlined"
                                             type="number"
                                             size="medium"
-                                            value={contract.Cost || ""}
+                                            value={(!roleName || ['senior engineer', 'engineer', 'out-source'].includes(roleName)) ? "" : (contract.Cost || "")}
                                             onChange={handleInputChange}
                                             style={{ color: "black" }}
                                         />

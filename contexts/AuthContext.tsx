@@ -1,5 +1,5 @@
 "use client"
-import { jwtDecode } from 'jwt-decode'
+import { jwtVerify } from 'jose';
 import { useRouter } from 'next/navigation'
 import { ReactNode, createContext, useState } from 'react'
 import { AuthValuesType, UserDataType } from './types'
@@ -24,7 +24,6 @@ const defaultProvider: AuthValuesType = {
 	loading: true,
 	setUser: () => null,
 	setLoading: () => Boolean,
-	// login: (email: string, password: string) => Promise.resolve(),
 	logout: () => Promise.resolve(),
 	doSignInWithMicrosoft: () => Promise.resolve(),
 }
@@ -34,9 +33,9 @@ const AuthContext = createContext(defaultProvider)
 type Props = {
 	children: ReactNode
 }
+const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
 
 const AuthProvider = ({ children }: Props) => {
-	// const storage = Storage.getInstance()
 
 	const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
 	const [loading, setLoading] = useState<boolean>(defaultProvider.loading)
@@ -64,7 +63,11 @@ const AuthProvider = ({ children }: Props) => {
 				const res = await apiUserLogin(idToken);
 				if (res) {
 					window.localStorage.setItem('at', JSON.stringify(res).slice(1, -1));
-					const userInfo = jwtDecode(String(res)) as UserDataType;
+					// Verify the JWT with the secret key and extract the payload
+					const { payload } = await jwtVerify(JSON.stringify(res).slice(1, -1), secretKey);
+
+					// Validate and cast the payload as UserDataType
+					const userInfo: UserDataType = payload as UserDataType;
 					window.localStorage.setItem('roleName', userInfo?.roleName!);
 					window.localStorage.setItem('exp', String(userInfo?.exp)!);
 					setUser(userInfo);
