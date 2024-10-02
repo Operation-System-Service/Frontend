@@ -383,7 +383,7 @@ function Device({ params: { slug } }: { params: { slug: string } }) {
                                                         variant="outlined"
                                                         type="string"
                                                         size="medium"
-                                                        value={createDevice.Brand}
+                                                        value={createDevice.Brand || ""}
                                                         onChange={handleInputChange}
                                                         style={{ color: 'black' }}
                                                     />
@@ -399,7 +399,7 @@ function Device({ params: { slug } }: { params: { slug: string } }) {
                                                         variant="outlined"
                                                         type="string"
                                                         size="medium"
-                                                        value={createDevice.Model}
+                                                        value={createDevice.Model || ""}
                                                         onChange={handleInputChange}
                                                         style={{ color: 'black' }}
                                                     />

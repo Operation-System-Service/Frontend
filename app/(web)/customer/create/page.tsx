@@ -141,7 +141,7 @@ function CustomerCreate() {
     });
 
     return (
-        <Box height="100vh">
+        <Box height="110vh">
 
             <ThemeProvider theme={theme}>
 

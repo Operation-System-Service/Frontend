@@ -79,7 +79,6 @@ export async function GetSearchCustomerContract(searchValue: string | undefined)
             "Content-Type": "application/json",
         }
     };
-
     let res = await axios.get(`/api/customer/contract/search/${searchValue}`, reqOpt)
     if (res.data) {
         return res.data.Data

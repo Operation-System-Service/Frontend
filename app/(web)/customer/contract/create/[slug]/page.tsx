@@ -186,7 +186,7 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box height="100vh">
+            <Box height="110vh">
 
                 <ThemeProvider theme={theme}>
                     <div

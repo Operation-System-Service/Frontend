@@ -6,7 +6,7 @@ import React from "react";
 
 import themeOptions from "@/@core/theme/themeOptions";
 import { useSettings } from "@/@core/hooks/useSettings";
-import { DeleteCustomerById, ListCustomers, GetSearchCustomer } from "@/services/Customer/CustomerServices";
+import { DeleteCustomerById, ListCustomers, GetSearchCustomer, GetSearchCustomerContract } from "@/services/Customer/CustomerServices";
 import Link from "next/link";
 
 import { ContractInterface } from "@/interfaces/IContract";
@@ -87,7 +87,7 @@ const Contract = ({ children }: any) => {
         if (searchValue == "") {
             getContract()
         } else {
-            let res = await GetSearchCustomer(searchValue)
+            let res = await GetSearchCustomerContract(searchValue)
             if (res) {
                 setContract(res);
             } 

@@ -5,7 +5,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { GetSearchCustomer } from "@/services/Customer/CustomerServices";
 import Link from "next/link";
-import { DeleteOperationServiceById, GetOperationServiceByStatusId, ListOperationServices } from "@/services/Operation/OperationServices";
+import { DeleteOperationServiceById, GetOperationServiceByStatusId, GetSearchOperationService, ListOperationServices } from "@/services/Operation/OperationServices";
 import { ListOperationServiceInterface } from "@/interfaces/IOperationService";
 import { StatusInterface } from "@/interfaces/IStatus";
 import { ListStatus } from "@/services/Status/StatusServices";
@@ -92,7 +92,7 @@ const Ticket = ({ children }: any) => {
         if (searchValue == "") {
             getOperation()
         } else {
-            let res = await GetSearchCustomer(searchValue)
+            let res = await GetSearchOperationService(searchValue)
             if (res) {
 
                 setOperation(res);
