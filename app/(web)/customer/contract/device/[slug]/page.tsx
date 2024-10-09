@@ -1,7 +1,7 @@
 "use client";
 
 import { ContractCreateInterface, CreateDeviceInterface, CreateSoftwareInterface, DeviceInterface, SoftwareInterface } from "@/interfaces/IContract";
-import { Alert, Box, Button, CardHeader, Container, createTheme, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, SelectChangeEvent, Snackbar, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, ThemeProvider } from "@mui/material";
+import { Alert, Autocomplete, Box, Button, CardHeader, Container, createTheme, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, SelectChangeEvent, Snackbar, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, ThemeProvider } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
 import React from "react";
@@ -11,6 +11,8 @@ import { CreateDevice, CreateSoftware, DeleteDeviceById, DeleteSoftwareById, get
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import { ListApplianceBrands } from "@/services/Customer/CustomerServices";
+import { ApplianceBrandInterface } from "@/interfaces/ICustomer";
 
 
 function Device({ params: { slug } }: { params: { slug: string } }) {
@@ -61,6 +63,8 @@ function Device({ params: { slug } }: { params: { slug: string } }) {
     const [expiredSoftwareLisenceDate, setExpiredSoftwareLisenceDate] = React.useState<Dayjs>(dayjs())
     const [updateSoftwareState, setUpdateSoftwareState] = React.useState<boolean>(false)
 
+    const [applianceBrand, setApplianceBrand] = React.useState<Partial<ApplianceBrandInterface>[]>([])
+
 
 
     const handleInputChange = (
@@ -77,6 +81,46 @@ function Device({ params: { slug } }: { params: { slug: string } }) {
             setErrors({
                 ...errors,
                 [id]: false,
+            });
+        }
+    };
+    const handleInputChangeApplicant = (value: ApplianceBrandInterface | null) => { // Accept the value directly
+        const id = 'Brand' as keyof typeof Device; // Assuming 'Brand' is the id for your field
+
+        // Update the createDevice state based on the selected value
+        setCreateDevice({ ...createDevice, [id]: value?.Name });
+
+        // Reset error when user selects a value
+        if (value) {
+            setErrors({
+                ...errors,
+                [id]: false,
+            });
+        } else {
+            // If no value is selected, you might want to set an error or handle it accordingly
+            setErrors({
+                ...errors,
+                [id]: true, // or handle as needed
+            });
+        }
+    };
+    const handleInputChangeApplicantSoftware = (value: ApplianceBrandInterface | null) => { // Accept the value directly
+        const id = 'Brand' as keyof typeof Device; // Assuming 'Brand' is the id for your field
+
+        // Update the createDevice state based on the selected value
+        setCreateSoftware({ ...createSoftware, [id]: value?.Name });
+
+        // Reset error when user selects a value
+        if (value) {
+            setErrorsSoftware({
+                ...errorsSoftware,
+                [id]: false,
+            });
+        } else {
+            // If no value is selected, you might want to set an error or handle it accordingly
+            setErrorsSoftware({
+                ...errorsSoftware,
+                [id]: true, // or handle as needed
             });
         }
     };
@@ -105,6 +149,12 @@ function Device({ params: { slug } }: { params: { slug: string } }) {
             setListDevices(res)
         }
     }
+    const getApplianceBrand = async () => {
+        let res = await ListApplianceBrands();
+        if (res && res.Status !== "error") {
+            setApplianceBrand(res)
+        }
+    }
     const getSoftwareByContractId = async (id: string) => {
         let res = await LisSoftwareByContractId(id);
         if (res && res.Status !== "error") {
@@ -114,8 +164,9 @@ function Device({ params: { slug } }: { params: { slug: string } }) {
     React.useEffect(() => {
         getDeviceByContractId(slug);
         getContract(slug);
-        getSoftwareByContractId(slug)
-    }, [])
+        getSoftwareByContractId(slug);
+        getApplianceBrand();
+    }, [slug])
     const getContract = async (id: string | undefined) => {
         let res = await getContractByID(id)
         if (res && res.Status !== "error") {
@@ -376,17 +427,24 @@ function Device({ params: { slug } }: { params: { slug: string } }) {
                                             <Grid item xs={3.5}>
                                                 <FormControl fullWidth variant="outlined">
                                                     <p style={{ color: 'black' }}>Brand</p>
-                                                    <TextField
-                                                        error={errors.Brand}
-                                                        helperText={errors.Brand ? 'Required field' : ''}
-                                                        id="Brand"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        value={createDevice.Brand || ""}
-                                                        onChange={handleInputChange}
-                                                        style={{ color: 'black' }}
-                                                    />
+                                                    <Autocomplete
+                                                            id="clear-on-escape"
+                                                            clearOnEscape
+                                                            options={applianceBrand as ApplianceBrandInterface[]}
+                                                            getOptionLabel={(option) => option.Name!}
+                                                            renderInput={(params) => (
+                                                                <TextField
+                                                                    {...params}
+                                                                    label=""
+                                                                    variant="outlined"
+                                                                    error={errors.Brand} // Apply error state to the TextField
+                                                                    helperText={errors.Brand ? 'Required field' : ''} // Display helper text
+                                                                />
+                                                            )}
+                                                            onChange={(event, value) => handleInputChangeApplicant(value)} // Pass selected value
+                                                        />
+
+
                                                 </FormControl>
                                             </Grid>
                                             <Grid item xs={3.5}>
@@ -711,7 +769,7 @@ function Device({ params: { slug } }: { params: { slug: string } }) {
                                                     <FormControl fullWidth variant="outlined">
                                                         <p style={{ color: "black" }}>Brand</p>
 
-                                                        <TextField
+                                                        {/* <TextField
                                                             error={errorsSoftware.Brand}
                                                             helperText={errorsSoftware.Brand ? 'Required field' : ''}
                                                             id="Brand"
@@ -721,7 +779,24 @@ function Device({ params: { slug } }: { params: { slug: string } }) {
                                                             value={createSoftware.Brand || ""}
                                                             onChange={handleInputChangeSoftware}
                                                             style={{ color: "black" }}
+                                                        /> */}
+                                                        <Autocomplete
+                                                            id="clear-on-escape"
+                                                            clearOnEscape
+                                                            options={applianceBrand as ApplianceBrandInterface[]}
+                                                            getOptionLabel={(option) => option.Name!}
+                                                            renderInput={(params) => (
+                                                                <TextField
+                                                                    {...params}
+                                                                    label=""
+                                                                    variant="outlined"
+                                                                    error={errorsSoftware.Brand} // Apply error state to the TextField
+                                                                    helperText={errorsSoftware.Brand ? 'Required field' : ''} // Display helper text
+                                                                />
+                                                            )}
+                                                            onChange={(event, value) => handleInputChangeApplicantSoftware(value)} // Pass selected value
                                                         />
+
                                                     </FormControl>
                                                 </Grid>
                                                 <Grid item xs={3.5}>

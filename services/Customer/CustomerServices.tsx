@@ -19,6 +19,24 @@ export async function ListCustomers() {
         })
     return res
 }
+export async function ListApplianceBrands() {
+    const reqOpt = {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("at")}`,
+            "Content-Type": "application/json",
+        }
+    };
+
+    let res = await axios.get(`/api/customer/appliance/brand`, reqOpt)
+        .then((res) => {
+            if (res.data) {
+                return res.data.Data
+            } else {
+                return false
+            }
+        })
+    return res
+}
 
 export async function DeleteCustomerById(id: string) {
     const reqOpt = {

@@ -52,4 +52,7 @@ export interface CreateCustomerGroupInterface {
   Name?: string;
   Description?: string;
 }
-
+export interface ApplianceBrandInterface {
+  Id: number;
+  Name?: string;
+}

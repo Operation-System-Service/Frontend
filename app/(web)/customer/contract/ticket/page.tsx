@@ -53,7 +53,7 @@ const Ticket = ({ children }: any) => {
         let res = await ListOperationServices();
         if (res) {
             setOperation(res)
-            setOverAllOperation(res)
+            // setoperation(res)
         }
     }
     const getOperationByStatus = async (id: Number) => {
@@ -94,7 +94,6 @@ const Ticket = ({ children }: any) => {
         } else {
             let res = await GetSearchOperationService(searchValue)
             if (res) {
-
                 setOperation(res);
             } else {
 
@@ -273,7 +272,7 @@ const Ticket = ({ children }: any) => {
                                     fontWeight: '900', // Make the text extra bold
                                 }}
                             >
-                                {overAllOperation.filter(op => op.Status?.Name === 'Open').length}
+                                {operation.filter(op => op.Status?.Name === 'Open').length}
                             </Typography>
                         </Box>
                         <Box
@@ -315,7 +314,7 @@ const Ticket = ({ children }: any) => {
                                     fontWeight: '900', // Make the text extra bold
                                 }}
                             >
-                                {overAllOperation.filter(op => op.Status?.Name === 'In-Progress').length + overAllOperation.filter(op => op.Status?.Name === 'Notice').length + operation.filter(op => op.Status?.Name === 'Pending').length}
+                                {operation.filter(op => op.Status?.Name === 'In-Progress').length + operation.filter(op => op.Status?.Name === 'Notice').length + operation.filter(op => op.Status?.Name === 'Pending').length}
                             </Typography>
                         </Box>
                         <Box
@@ -357,7 +356,7 @@ const Ticket = ({ children }: any) => {
                                     fontWeight: '900', // Make the text extra bold
                                 }}
                             >
-                                {overAllOperation.filter(op => op.Status?.Name === 'Complete').length + overAllOperation.filter(op => op.Status?.Name === 'Reject').length}
+                                {operation.filter(op => op.Status?.Name === 'Complete').length + operation.filter(op => op.Status?.Name === 'Reject').length}
                             </Typography>
                         </Box>
                     </div>
@@ -368,6 +367,7 @@ const Ticket = ({ children }: any) => {
                                 <Table aria-label="simple table">
                                     <TableHead>
                                         <TableRow>
+                                            <TableCell align="center" width="20%"> Company </TableCell>
                                             <TableCell align="center" width="20%"> Subject </TableCell>
                                             <TableCell align="center" width="5%"> TicketNumber </TableCell>
                                             <TableCell align="center" width="5%"> Status </TableCell>
@@ -385,6 +385,7 @@ const Ticket = ({ children }: any) => {
                                                 key={item.Id}
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                             >
+                                                <TableCell align="left">{item.Contract?.Customer?.CompanyName || "-"}</TableCell>
                                                 <TableCell align="left">{item.OperationSubject || "-"}</TableCell>
                                                 <TableCell align="center">{item.OperationNumber || "-"}</TableCell>
                                                 <TableCell align="center">{item.Status?.Name || "-"}</TableCell>
