@@ -1,6 +1,6 @@
 
 import { CreateOperationServiceInterface, UpdateOperationServiceInterface } from "@/interfaces/IOperationService";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 export async function ListOperationTypes() {
     const reqOpt = {
@@ -56,7 +56,7 @@ export async function ListOperationServices() {
     return res
 }
 
-export async function CreateOperationService(operation : Partial<CreateOperationServiceInterface>) {
+export async function CreateOperationService(operation: Partial<CreateOperationServiceInterface>) {
     try {
         const reqOpt = {
             headers: {
@@ -196,4 +196,63 @@ export async function GetOperationServiceHistoryByOperationId(id: string) {
         })
     return res
 }
+
+export async function downloadCsv(search_key: string) {
+    try {
+        const reqOpt: AxiosRequestConfig = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('at')}`,
+                'Content-Type': 'application/json',
+            },
+            responseType: 'blob',
+        };
+        const response = await axios.post(
+            '/api/operation/export/csv',
+            { search_key: search_key }, // This is the data being sent with the request
+            reqOpt
+        );
+
+        // Create a URL for the file blob
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'operation_services.csv'); // The filename to use for the download
+        document.body.appendChild(link);
+        link.click();
+        link.remove(); // Clean up after the download
+        return "success"
+    } catch (error) {
+        console.error('Failed to download CSV:', error);
+        return error
+    }
+};
+export async function downloadPdf(search_key: string) {
+    try {
+        const reqOpt: AxiosRequestConfig = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('at')}`,
+                'Content-Type': 'application/json',
+            },
+            responseType: 'blob',
+        };
+        const response = await axios.post(
+            '/api/operation/export/pdf',
+            { search_key: search_key }, // This is the data being sent with the request
+            reqOpt
+        );
+
+        // Create a URL for the file blob
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'operation_services.pdf'); // The filename to use for the download
+        document.body.appendChild(link);
+        link.click();
+        link.remove(); // Clean up after the download
+        return "success"
+    } catch (error) {
+        console.error('Failed to download pdf:', error);
+        return error
+    }
+};
 

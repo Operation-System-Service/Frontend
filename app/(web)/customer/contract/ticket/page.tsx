@@ -1,48 +1,22 @@
 "use client"
-import { Button, CardHeader, Divider, Grid, TextField, CardContent, Container, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, ThemeProvider, createTheme, Typography, FormControl, Select, SelectChangeEvent, InputLabel, OutlinedInput } from "@mui/material";
+import { Button, CardHeader, Divider, Grid, TextField, CardContent, Container, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, ThemeProvider, createTheme, Typography, FormControl, Select, SelectChangeEvent, InputLabel, OutlinedInput, ButtonGroup, Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem, List, ListSubheader, ListItemButton, ListItemIcon, ListItemText, Collapse, Alert, Snackbar, CircularProgress } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { GetSearchCustomer } from "@/services/Customer/CustomerServices";
 import Link from "next/link";
-import { DeleteOperationServiceById, GetOperationServiceByStatusId, GetSearchOperationService, ListOperationServices } from "@/services/Operation/OperationServices";
+import { DeleteOperationServiceById, downloadCsv, downloadPdf, GetOperationServiceByStatusId, GetSearchOperationService, ListOperationServices } from "@/services/Operation/OperationServices";
 import { ListOperationServiceInterface } from "@/interfaces/IOperationService";
 import { StatusInterface } from "@/interfaces/IStatus";
 import { ListStatus } from "@/services/Status/StatusServices";
+import { ArrowDropDownIcon } from "@mui/x-date-pickers/icons";
 
-
-const useStyles = makeStyles({
-    root: {
-        display: "flex",
-    },
-    appBar: {
-        zIndex: 1200,
-    },
-    toolbar: {
-        minHeight: 64,
-    },
-    content: {
-        flexGrow: 1,
-        backgroundColor: "#eaecef",
-        // padding: 8,
-    },
-    texticon: {
-        color: "#fff",
-        textDecoration: "none",
-        fontWeight: 700,
-        fontSize: "24px"
-    },
-    footer: {
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        padding: "10px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-around",
-        width: "17%",
-    },
-});
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import DraftsIcon from '@mui/icons-material/Drafts';
+import SendIcon from '@mui/icons-material/Send';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import StarBorder from '@mui/icons-material/StarBorder';
 
 
 const Ticket = ({ children }: any) => {
@@ -95,10 +69,7 @@ const Ticket = ({ children }: any) => {
             let res = await GetSearchOperationService(searchValue)
             if (res) {
                 setOperation(res);
-            } else {
-
             }
-
         }
 
     }
@@ -108,6 +79,7 @@ const Ticket = ({ children }: any) => {
             setStatus(res);
         }
     }
+
 
     const handleDialogDeleteOpen = (ID: string) => {
         setDeleteID(ID)
@@ -134,6 +106,55 @@ const Ticket = ({ children }: any) => {
         }
     };
 
+    const [loadingPdf, setLoadingPdf] = React.useState(false);
+    const [loadingCsv, setLoadingCsv] = React.useState(false);
+    const exportCsv = async () => {
+        setLoadingCsv(true);
+        let res = await downloadCsv(searchValue);
+        setLoadingCsv(false);
+        if (res != "success") {
+            setError(true);
+        }
+
+    }
+    const exportPdf = async () => {
+        setLoadingPdf(true);
+        let res = await downloadPdf(searchValue);
+        setLoadingPdf(false);
+        if (res != "success") {
+            setError(true);
+        }
+    }
+
+
+    const [open, setOpen] = React.useState(true);
+
+    const handleClick = () => {
+        setOpen(!open);
+    };
+    const handleCsvClick = () => {
+        exportCsv()
+
+    };
+    const handlePdfClick = () => {
+        exportPdf()
+    };
+    const [success, setSuccess] = React.useState(false);
+    //check max min lenght
+    const [error, setError] = React.useState(false);
+
+    const handleClose = (
+        event?: React.SyntheticEvent | Event,
+
+        reason?: string
+    ) => {
+        if (reason === "clickaway") {
+            return;
+        }
+
+        setSuccess(false);
+        setError(false);
+    };
 
     return (
         <Box height="100vh">
@@ -155,80 +176,139 @@ const Ticket = ({ children }: any) => {
                 ></CardHeader>
             </div>
             <CardContent style={{ backgroundColor: "#f8f9fa" }} sx={{ p: 0, px: 2, py: 2, flexGrow: 1 }}>
+                <Snackbar
+                    id="success"
+                    open={success}
+                    autoHideDuration={8000}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Alert onClose={handleClose} severity="success">
+                        บันทึกข้อมูลสำเร็จ
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar
+                    id="error"
+                    open={error}
+                    autoHideDuration={8000}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Alert onClose={handleClose} severity="error">
+                        บันทึกข้อมูลไม่สำเร็จ
+
+                    </Alert>
+                </Snackbar>
                 <div>
-                    <div style={{ marginTop: "1px" }}>
-                        <Grid container spacing={0} alignItems="center" >
-                            {/* Search Field */}
-                            <Grid item xs={4}>
-                                <TextField
-                                    fullWidth
-                                    style={{
-                                        backgroundColor: "white",
-                                        borderRadius: "10px 0px 0px 10px",
-                                        minHeight: "60px",
-                                    }}
-                                    sx={{
-                                        "& .MuiOutlinedInput-root": {
+                    <div>
+                        <div style={{ marginTop: "1px" }}>
+                            <Grid container spacing={1} alignItems="center">
+                                {/* Search Field */}
+                                <Grid item xs={4}>
+                                    <TextField
+                                        fullWidth
+                                        style={{
+                                            backgroundColor: "white",
                                             borderRadius: "10px 0px 0px 10px",
-                                        },
-                                    }}
-                                    size="medium"
-                                    label="Search Name, Email"
-                                    variant="outlined"
-                                    value={searchValue || ""}
-                                    onChange={handleInputChange}
-                                />
-                            </Grid>
-
-                            {/* Search Button */}
-                            <Grid item xs={1} sx={{ paddingTop: "0px" }}>
-                                <Button
-                                    variant="contained"
-                                    onClick={handleSearch}
-                                    fullWidth
-                                    style={{
-                                        borderRadius: "0px 10px 10px 0px",
-                                        height: "60px",
-                                    }}
-                                    sx={{
-                                        backgroundColor: "#0082EF",
-                                    }}
-                                >
-                                    <SearchIcon />
-                                </Button>
-                            </Grid>
-
-                            {/* Status Dropdown */}
-                            <Grid item xs={4} sx={{ paddingLeft: "20px" }}>
-                                <FormControl fullWidth variant="outlined">
-                                    <InputLabel id="demo-multiple-name-label">Status</InputLabel>
-                                    <Select
-                                        labelId="demo-multiple-name-label"
-                                        id="demo-multiple-name"
-                                        native
-                                        onChange={handleChangeStatus}
-                                        value={selectStatus ?? 0}
-                                        input={<OutlinedInput label="Status" />}
-                                        inputProps={{
-                                            name: "StatusID",
+                                            minHeight: "60px",
                                         }}
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                borderRadius: "10px 0px 0px 10px",
+                                            },
+                                        }}
+                                        size="medium"
+                                        label="Search Name, Email"
+                                        variant="outlined"
+                                        value={searchValue || ""}
+                                        onChange={handleInputChange}
+                                    />
+                                </Grid>
+
+                                {/* Search Button */}
+                                <Grid item xs={2}>
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleSearch}
+                                        fullWidth
                                         style={{
                                             borderRadius: "0px 10px 10px 0px",
-                                            height: "100%",
+                                            height: "60px",
                                         }}
-
+                                        sx={{
+                                            backgroundColor: "#0082EF",
+                                        }}
                                     >
-                                        <option value={0} key={0}>
-                                            All Status
-                                        </option>
-                                        {status.map((item: StatusInterface) => (
-                                            <option key={item.Id} value={item.Id}>{item.Name}</option>
-                                        ))}
-                                    </Select>
-                                </FormControl>
+                                        <SearchIcon />
+                                    </Button>
+                                </Grid>
+
+                                {/* Status Dropdown */}
+                                <Grid item xs={3}>
+                                    <FormControl fullWidth variant="outlined">
+                                        <InputLabel id="demo-multiple-name-label">Status</InputLabel>
+                                        <Select
+                                            labelId="demo-multiple-name-label"
+                                            id="demo-multiple-name"
+                                            native
+                                            onChange={handleChangeStatus}
+                                            value={selectStatus ?? 0}
+                                            input={<OutlinedInput label="Status" />}
+                                            inputProps={{
+                                                name: "StatusID",
+                                            }}
+                                            style={{
+                                                borderRadius: "10px",
+                                                height: "60px",
+                                            }}
+                                        >
+                                            <option value={0} key={0}>
+                                                All Status
+                                            </option>
+                                            {status.map((item: StatusInterface) => (
+                                                <option key={item.Id} value={item.Id}>{item.Name}</option>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+
+                                {/* Button Group */}
+                                <Grid item xs={3}>
+                                    <List
+                                        sx={{ width: '100%', maxWidth: 360 }}
+                                        component="nav"
+                                        aria-labelledby="nested-list-subheader"
+                                    >
+                                        <ListItemButton onClick={handleClick}>
+                                            <ListItemIcon >
+                                                <InboxIcon sx={{ color: "black" }} />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Export" sx={{ color: "black" }} />
+                                            {open ? <ExpandLess /> : <ExpandMore />}
+                                        </ListItemButton>
+                                        <Collapse in={open} timeout="auto" unmountOnExit>
+                                            <List component="div" disablePadding>
+                                                <ListItemButton sx={{ pl: 4, color: "black" }} onClick={handleCsvClick}>
+                                                    <ListItemIcon>
+                                                        {loadingCsv ? <CircularProgress size={20} /> : null} {/* Loading indicator */}
+                                                    </ListItemIcon>
+                                                    <ListItemText primary="CSV" />
+                                                </ListItemButton>
+                                                <ListItemButton sx={{ pl: 4, color: "black" }} onClick={handlePdfClick}>
+                                                <ListItemIcon>
+                                                        {loadingPdf ? <CircularProgress size={20} /> : null} {/* Loading indicator */}
+                                                    </ListItemIcon>
+                                                    <ListItemText primary="PDF" />
+                                                </ListItemButton>
+                                            </List>
+                                        </Collapse>
+                                    </List>
+                                </Grid>
                             </Grid>
-                        </Grid>
+                        </div>
                     </div>
+
 
                     <Divider sx={{ borderColor: "transparent", padding: 2 }} />
                     <div className="flex flex-row ">
@@ -362,7 +442,7 @@ const Ticket = ({ children }: any) => {
                     </div>
                     <Divider sx={{ borderColor: "border-gray-600", padding: 2 }} />
                     <div className="flex flex-col" style={{ background: "#f8f9fa", maxHeight: "59vh" }}>
-                    <div style={{ overflowX: 'auto' }}> {/* Add this div for horizontal scrolling */}
+                        <div style={{ overflowX: 'auto' }}> {/* Add this div for horizontal scrolling */}
                             <TableContainer >
                                 <Table aria-label="simple table">
                                     <TableHead>
