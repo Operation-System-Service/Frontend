@@ -201,7 +201,7 @@ const Customer = ({ children }: any) => {
                         <TabPanel value="1">
                             <CardContent style={{ backgroundColor: "#f8f9fa" }} sx={{ p: 0, px: 2, flexGrow: 1 }}>
                                 <div className="flex flex-col" style={{ background: "#f8f9fa", maxHeight: "100vh" }}>
-                                    <div style={{ overflowX: 'auto' }}> {/* Add this div for horizontal scrolling */}
+                                    <div> {/* Add this div for horizontal scrolling */}
                                         <Grid container spacing={1} >
                                             <Grid item xs={3} className="flex justify-center flex-col-reverse">
                                                 <TextField
@@ -220,7 +220,6 @@ const Customer = ({ children }: any) => {
                                                     variant="outlined"
                                                     value={searchValue || ""}
                                                     onChange={handleInputChange}
-
                                                 />
                                             </Grid>
                                             <Grid className="flex justify-center flex-col-reverse" sx={{ paddingTop: "4px" }} xs={0.5}>
@@ -273,10 +272,9 @@ const Customer = ({ children }: any) => {
                                                 <TableHead>
                                                     <TableRow>
                                                         <TableCell align="center" width="30%"> Company Name </TableCell>
-                                                        <TableCell align="center"> TaxNumber </TableCell>
                                                         <TableCell align="center"> Customer Group </TableCell>
                                                         <TableCell align="center" width="5%"> Contract </TableCell>
-                                                        <TableCell align="center" width="5%"> View </TableCell>
+                                                        <TableCell align="center" width="5%"> Update </TableCell>
                                                         <TableCell align="center" width="5%"> Delete </TableCell>
 
                                                     </TableRow>
@@ -289,7 +287,6 @@ const Customer = ({ children }: any) => {
                                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                         >
                                                             <TableCell align="left">{item.CompanyName || "-"}</TableCell>
-                                                            <TableCell align="center">{item.TaxNumber || "-"}</TableCell>
                                                             <TableCell align="center">{customerGroups.find((group) => group.Id == item.CustomerGroupId)?.Name}</TableCell>
 
                                                             <TableCell align="center">
@@ -320,7 +317,7 @@ const Customer = ({ children }: any) => {
                                                                                 maxHeight: 60, // Set the maximum height of the button
                                                                             }}
                                                                         >
-                                                                            View
+                                                                            Update
                                                                         </Button>
                                                                     </Link>
 

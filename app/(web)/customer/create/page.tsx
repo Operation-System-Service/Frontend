@@ -207,7 +207,7 @@ function CustomerCreate() {
                             </Grid>
                         </Grid>
                         <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
-                            <Grid item xs={5}>
+                            {/* <Grid item xs={5}>
                                 <FormControl fullWidth variant="outlined">
                                     <p style={{ color: "black" }}>Tax Number</p>
                                     <TextField
@@ -221,8 +221,8 @@ function CustomerCreate() {
                                         inputProps={{ maxLength: 13 }}
                                     />
                                 </FormControl>
-                            </Grid>
-                            <Grid item xs={5}>
+                            </Grid> */}
+                            <Grid item xs={10}>
                                 <FormControl fullWidth variant="outlined">
                                     <p style={{ color: "black" }}>Customer Group</p>
                                     <Select

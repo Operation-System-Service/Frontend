@@ -204,7 +204,7 @@ const Contract = ({ children }: any) => {
                                                 <TableCell align="center" width="5%"> IncidentPerContract </TableCell>
                                                 <TableCell align="center" style={{ minWidth: '150px' }} width="5%"> OverAll Incident Per Contract </TableCell>
                                                 <TableCell align="center" width="5%"> SLA </TableCell>
-                                                <TableCell align="center" width="5%"> View </TableCell>
+                                                <TableCell align="center" width="5%"> UPDATE </TableCell>
                                                 <TableCell align="center" width="5%"> Appliance </TableCell>
                                                 <TableCell align="center" width="5%"> Config Backup </TableCell>
                                                 <TableCell align="center" width="5%"> Ticket </TableCell>
@@ -311,7 +311,7 @@ const Contract = ({ children }: any) => {
                                                                         maxHeight: 60, // Set the maximum height of the button
                                                                     }}
                                                                 >
-                                                                    view
+                                                                    UPDATE
                                                                 </Button>
                                                             </Link>
 
@@ -406,7 +406,7 @@ const Contract = ({ children }: any) => {
                                     }}
                                 >
                                     <DialogTitle id="alert-dialog-title">
-                                        {`คุณต้องการลบสัญญษโปรเจค ${contract.filter((emp) => (emp.Id === deleteID)).at(0)?.ProjectName} จริงหรือไม่`}
+                                        {`คุณต้องการลบสัญญาโปรเจค ${contract.filter((emp) => (emp.Id === deleteID)).at(0)?.ProjectName} จริงหรือไม่`}
                                     </DialogTitle>
                                     <DialogContent>
                                         <DialogContentText id="alert-dialog-description">

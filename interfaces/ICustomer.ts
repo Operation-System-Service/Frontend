@@ -3,7 +3,6 @@ export interface CustomerInterface {
   CompanyName?: string;
 
   Description?: string;
-  TaxNumber?: string;
   CreateDate?: Date;
   UpdateDate?: Date;
   CustomerGroupId?: number;
@@ -13,7 +12,6 @@ export interface CustomerInterface {
 export interface CustomerCreateInterface {
   CompanyName?: string;
   Description?: string;
-  TaxNumber?: string;
   CreateDate?: Date;
   UpdateDate?: Date;
   CustomerGroupId?: number;

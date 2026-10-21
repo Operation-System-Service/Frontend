@@ -90,6 +90,7 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
         if (typeof window !== 'undefined') {
             const storedRoleName = window.localStorage.getItem('roleName');
             setRoleName(storedRoleName);
+            console.log(storedRoleName)
           }
     }, []);
     React.useEffect(() => {
@@ -270,7 +271,8 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
                                             variant="outlined"
                                             type="number"
                                             size="medium"
-                                            value={(!roleName || ['senior engineer', 'engineer', 'out-source'].includes(roleName)) ? "" : (contract.Cost || "")}
+                                            value={(roleName != null && ['senior engineer', 'engineer', 'out-source'].includes(roleName)) ? "" : (contract.Cost || "")}
+                                            // value={contract.Cost || ""}
                                             onChange={handleInputChange}
                                             style={{ color: "black" }}
                                         />
@@ -279,7 +281,23 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
 
                             </Grid>
                             <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
-                                <Grid item xs={5}>
+                                <Grid item xs={3}>
+                                    <FormControl fullWidth variant="outlined">
+                                        <p style={{ color: "black" }}>Tax Number</p>
+
+                                        <TextField
+                                            id="TaxNumber"
+                                            variant="outlined"
+                                            type="string"
+                                            size="medium"
+                                            value={contract.TaxNumber || ""}
+                                            onChange={handleInputChange}
+                                            style={{ color: "black" }}
+                                            inputProps={{ maxLength: 13 }}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={3.5}>
                                     <FormControl fullWidth variant="outlined">
                                         <p style={{ color: "black" }}>Customer Po Number</p>
 
@@ -295,7 +313,7 @@ export default function ContractUpdate({ params: { slug } }: { params: { slug: s
                                         />
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={5}>
+                                <Grid item xs={3.5}>
                                     <FormControl fullWidth variant="outlined">
                                         <p style={{ color: "black" }}>Vendor PO Number</p>
 

@@ -207,7 +207,30 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
                         ></CardHeader>
                     </div>
                     <Box >
+                        <Snackbar
+                            id="success"
+                            open={success}
+                            autoHideDuration={8000}
+                            onClose={handleClose}
+                            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                        >
+                            <Alert onClose={handleClose} severity="success">
+                                บันทึกข้อมูลสำเร็จ
+                            </Alert>
+                        </Snackbar>
 
+                        <Snackbar
+                            id="error"
+                            open={error}
+                            autoHideDuration={8000}
+                            onClose={handleClose}
+                            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                        >
+                            <Alert onClose={handleClose} severity="error">
+                                {/* บันทึกข้อมูลไม่สำเร็จ */}
+                                {message}
+                            </Alert>
+                        </Snackbar>
 
                         <div className="flex flex-col ">
                             <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
@@ -244,7 +267,23 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
 
                             </Grid>
                             <Grid container spacing={3} sx={{ padding: 2 }} style={{ marginLeft: "6.5%" }}>
-                                <Grid item xs={5}>
+                                <Grid item xs={3}>
+                                    <FormControl fullWidth variant="outlined">
+                                        <p style={{ color: "black" }}>Tax Number</p>
+
+                                        <TextField
+                                            id="TaxNumber"
+                                            variant="outlined"
+                                            type="string"
+                                            size="medium"
+                                            value={contract.TaxNumber || ""}
+                                            onChange={handleInputChange}
+                                            style={{ color: "black" }}
+                                            inputProps={{ maxLength: 13 }}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={3.5}>
                                     <FormControl fullWidth variant="outlined">
                                         <p style={{ color: "black" }}>Customer Po Number</p>
 
@@ -260,7 +299,7 @@ export default function ContractCreate({ params: { slug } }: { params: { slug: s
                                         />
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={5}>
+                                <Grid item xs={3.5}>
                                     <FormControl fullWidth variant="outlined">
                                         <p style={{ color: "black" }}>Vendor PO Number</p>
 

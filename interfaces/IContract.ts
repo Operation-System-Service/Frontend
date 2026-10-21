@@ -12,6 +12,7 @@ export interface ContractCreateInterface {
   IncidentPerContract?: number;
   Cost?: number;
   OverAllIncident?: number;
+  TaxNumber?: string;
   Description?: string;
   NoticeDate1?: string;
   NoticeDate2?: string;
@@ -35,6 +36,7 @@ export interface ContractUpdateInterface {
   IncidentPerYear?: number;
   IncidentPerContract?: number;
   OverAllIncident?: number;
+  TaxNumber?: string;
   Cost?: number;
   Description?: string;
   NoticeDate1?: string;
@@ -59,6 +61,7 @@ export interface ContractInterface {
   IncidentPerYear?: number;
   IncidentPerContract?: number;
   OverAllIncident?: number;
+  TaxNumber?: string;
   Cost?: number;
   Description?: string;
   NoticeDate?: Date;
@@ -87,6 +90,7 @@ export interface ContractHistoryInterface {
   IncidentPerYear?: number;
   IncidentPerContract?: number;
   OverAllIncident?: number;
+  TaxNumber?: string;
   Cost?: number;
   Description?: string;
   NoticeDate?: Date;
